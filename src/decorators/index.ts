@@ -28,7 +28,7 @@ import { GeckoModuleDecorate, GeckoModuleIml } from '../interfaces';
 
 export { inject, injectable, Container } from 'inversify';
 
-export type { Newable } from 'inversify';
+export type { Newable, BindingScope } from 'inversify';
 
 export function ApplyClassDecorators(...args: ClassDecorator[]): ClassDecorator {
   return (target) => {
