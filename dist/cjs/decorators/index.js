@@ -1,14 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.GeckoModule = exports.ApplyClassDecorators = exports.Container = exports.injectable = exports.inject = void 0;
-var class_mirror_1 = require("@geckoai/class-mirror");
-var inversify_1 = require("inversify");
-var interfaces_1 = require("../interfaces");
-var inversify_2 = require("inversify");
-Object.defineProperty(exports, "inject", { enumerable: true, get: function () { return inversify_2.inject; } });
-Object.defineProperty(exports, "injectable", { enumerable: true, get: function () { return inversify_2.injectable; } });
-Object.defineProperty(exports, "Container", { enumerable: true, get: function () { return inversify_2.Container; } });
-function ApplyClassDecorators() {
+import { ClassMirror } from '@geckoai/class-mirror';
+import { injectable } from 'inversify';
+import { GeckoModuleDecorate } from '../interfaces';
+export { inject, injectable, Container } from 'inversify';
+export function ApplyClassDecorators() {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
         args[_i] = arguments[_i];
@@ -17,17 +11,15 @@ function ApplyClassDecorators() {
         args.forEach(function (arg) { return arg(target); });
     };
 }
-exports.ApplyClassDecorators = ApplyClassDecorators;
-function GeckoModule() {
+export function GeckoModule() {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
         args[_i] = arguments[_i];
     }
     var arg = args[0];
     if (typeof arg === 'function') {
-        return ApplyClassDecorators(class_mirror_1.ClassMirror.createDecorator(new interfaces_1.GeckoModuleDecorate(null)), (0, inversify_1.injectable)())(arg);
+        return ApplyClassDecorators(ClassMirror.createDecorator(new GeckoModuleDecorate(null)), injectable())(arg);
     }
     var _a = args, metadata = _a[0], scope = _a[1];
-    return ApplyClassDecorators(class_mirror_1.ClassMirror.createDecorator(new interfaces_1.GeckoModuleDecorate(metadata)), (0, inversify_1.injectable)(scope));
+    return ApplyClassDecorators(ClassMirror.createDecorator(new GeckoModuleDecorate(metadata)), injectable(scope));
 }
-exports.GeckoModule = GeckoModule;

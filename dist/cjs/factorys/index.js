@@ -1,6 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ProviderFactory = exports.ResolvedValueProvider = exports.FactoryProvider = exports.ExistingProvider = exports.ClassProvider = exports.ConstructorProvider = exports.DynamicValueProvider = exports.ConstantValueProvider = void 0;
 var ConstantValueProvider = (function () {
     function ConstantValueProvider(provide, useConstantValue) {
         this.provide = provide;
@@ -11,7 +8,7 @@ var ConstantValueProvider = (function () {
     };
     return ConstantValueProvider;
 }());
-exports.ConstantValueProvider = ConstantValueProvider;
+export { ConstantValueProvider };
 var DynamicValueProvider = (function () {
     function DynamicValueProvider(provide, useDynamicValue, scope) {
         this.provide = provide;
@@ -23,7 +20,7 @@ var DynamicValueProvider = (function () {
     };
     return DynamicValueProvider;
 }());
-exports.DynamicValueProvider = DynamicValueProvider;
+export { DynamicValueProvider };
 var ConstructorProvider = (function () {
     function ConstructorProvider(provide, scope) {
         this.provide = provide;
@@ -34,7 +31,7 @@ var ConstructorProvider = (function () {
     };
     return ConstructorProvider;
 }());
-exports.ConstructorProvider = ConstructorProvider;
+export { ConstructorProvider };
 var ClassProvider = (function () {
     function ClassProvider(provide, useClass, scope) {
         this.provide = provide;
@@ -46,7 +43,7 @@ var ClassProvider = (function () {
     };
     return ClassProvider;
 }());
-exports.ClassProvider = ClassProvider;
+export { ClassProvider };
 var ExistingProvider = (function () {
     function ExistingProvider(provide, useExisting) {
         this.provide = provide;
@@ -57,7 +54,7 @@ var ExistingProvider = (function () {
     };
     return ExistingProvider;
 }());
-exports.ExistingProvider = ExistingProvider;
+export { ExistingProvider };
 var FactoryProvider = (function () {
     function FactoryProvider(provide, useFactory) {
         this.provide = provide;
@@ -68,7 +65,7 @@ var FactoryProvider = (function () {
     };
     return FactoryProvider;
 }());
-exports.FactoryProvider = FactoryProvider;
+export { FactoryProvider };
 var ResolvedValueProvider = (function () {
     function ResolvedValueProvider(provide, useResolvedValueFactory, deps, scope) {
         this.provide = provide;
@@ -81,8 +78,8 @@ var ResolvedValueProvider = (function () {
     };
     return ResolvedValueProvider;
 }());
-exports.ResolvedValueProvider = ResolvedValueProvider;
-exports.ProviderFactory = {
+export { ResolvedValueProvider };
+export var ProviderFactory = {
     ConstantValueProvider: ConstantValueProvider.create,
     DynamicValueProvider: DynamicValueProvider.create,
     ConstructorProvider: ConstructorProvider.create,

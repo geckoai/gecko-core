@@ -1,6 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Constants = void 0;
 var Constants = (function () {
     function Constants() {
     }
@@ -9,4 +6,4 @@ var Constants = (function () {
     Constants.module = Symbol.for("module");
     return Constants;
 }());
-exports.Constants = Constants;
+export { Constants };

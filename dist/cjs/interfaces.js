@@ -1,4 +1,3 @@
-"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -14,14 +13,12 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.GeckoModuleDecorate = void 0;
-var class_mirror_1 = require("@geckoai/class-mirror");
+import { ClassDecorate } from '@geckoai/class-mirror';
 var GeckoModuleDecorate = (function (_super) {
     __extends(GeckoModuleDecorate, _super);
     function GeckoModuleDecorate() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     return GeckoModuleDecorate;
-}(class_mirror_1.ClassDecorate));
-exports.GeckoModuleDecorate = GeckoModuleDecorate;
+}(ClassDecorate));
+export { GeckoModuleDecorate };

@@ -1,10 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Bootstrap = void 0;
-var class_mirror_1 = require("@geckoai/class-mirror");
-var inversify_1 = require("inversify");
-var interfaces_1 = require("./interfaces");
-var constants_1 = require("./constants");
+import { ClassMirror } from '@geckoai/class-mirror';
+import { Container } from 'inversify';
+import { GeckoModuleDecorate } from './interfaces';
+import { Constants } from './constants';
 var Bootstrap = (function () {
     function Bootstrap() {
     }
@@ -24,15 +21,15 @@ var Bootstrap = (function () {
         }
     };
     Bootstrap.module = function (module, parent) {
-        var classMirror = class_mirror_1.ClassMirror.reflect(module);
-        var allDecorates = classMirror.getAllDecorates(interfaces_1.GeckoModuleDecorate);
-        var container = new inversify_1.Container({ parent: parent });
-        container.bind(constants_1.Constants.module).toConstantValue(module);
-        container.bind(class_mirror_1.ClassMirror).toConstantValue(classMirror);
+        var classMirror = ClassMirror.reflect(module);
+        var allDecorates = classMirror.getAllDecorates(GeckoModuleDecorate);
+        var container = new Container({ parent: parent });
+        container.bind(Constants.module).toConstantValue(module);
+        container.bind(ClassMirror).toConstantValue(classMirror);
         if (parent) {
-            container.bind(constants_1.Constants.parent).toConstantValue(parent);
+            container.bind(Constants.parent).toConstantValue(parent);
         }
-        container.bind(inversify_1.Container).toConstantValue(container);
+        container.bind(Container).toConstantValue(container);
         var object = {
             providers: [],
             exports: [],
@@ -88,7 +85,7 @@ var Bootstrap = (function () {
             }
             return result;
         });
-        container.bind(constants_1.Constants.children).toConstantValue(loadedModules.map(function (it) { return it.container; }));
+        container.bind(Constants.children).toConstantValue(loadedModules.map(function (it) { return it.container; }));
         var _loop_1 = function (exp) {
             if (typeof exp === 'function') {
                 parent === null || parent === void 0 ? void 0 : parent.bind(exp).toResolvedValue(function () { return container.get(exp); });
@@ -113,4 +110,4 @@ var Bootstrap = (function () {
     };
     return Bootstrap;
 }());
-exports.Bootstrap = Bootstrap;
+export { Bootstrap };
