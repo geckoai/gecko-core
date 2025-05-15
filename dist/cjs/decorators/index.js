@@ -1,8 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Container = exports.injectable = exports.inject = void 0;
-exports.ApplyClassDecorators = ApplyClassDecorators;
-exports.GeckoModule = GeckoModule;
+exports.GeckoModule = exports.ApplyClassDecorators = exports.Container = exports.injectable = exports.inject = void 0;
 var class_mirror_1 = require("@geckoai/class-mirror");
 var inversify_1 = require("inversify");
 var interfaces_1 = require("../interfaces");
@@ -19,6 +17,7 @@ function ApplyClassDecorators() {
         args.forEach(function (arg) { return arg(target); });
     };
 }
+exports.ApplyClassDecorators = ApplyClassDecorators;
 function GeckoModule() {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
@@ -31,3 +30,4 @@ function GeckoModule() {
     var _a = args, metadata = _a[0], scope = _a[1];
     return ApplyClassDecorators(class_mirror_1.ClassMirror.createDecorator(new interfaces_1.GeckoModuleDecorate(metadata)), (0, inversify_1.injectable)(scope));
 }
+exports.GeckoModule = GeckoModule;

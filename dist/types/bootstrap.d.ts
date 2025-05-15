@@ -32,10 +32,7 @@ export interface LoadedModule<T = unknown> {
     loadedModules: LoadedModule[];
 }
 export declare class Bootstrap {
-    static run<T extends object>(app: Newable<T>): {
-        instance: T;
-        container: Container;
-    };
+    static run<T extends object>(app: Newable<T>): LoadedModule<T>;
     private static useScope;
     private static module;
 }

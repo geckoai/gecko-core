@@ -46,7 +46,7 @@ export interface LoadedModule<T = unknown> {
 }
 
 export class Bootstrap {
-  public static run<T extends object>(app: Newable<T>): { instance: T, container: Container } {
+  public static run<T extends object>(app: Newable<T>): LoadedModule<T> {
     return Bootstrap.module(app);
   }
 

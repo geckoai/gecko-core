@@ -19,3 +19,4 @@ __exportStar(require("./constants"), exports);
 __exportStar(require("./bootstrap"), exports);
 __exportStar(require("./factorys"), exports);
 __exportStar(require("./interfaces"), exports);
+console.log(11);
