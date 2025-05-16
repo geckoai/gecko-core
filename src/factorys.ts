@@ -23,7 +23,7 @@
  */
 
 import { BindingScope, DynamicValueBuilder, Newable, ResolutionContext, ServiceIdentifier } from 'inversify';
-import { MapToResolvedValueInjectOptions } from '../interfaces';
+import { MapToResolvedValueInjectOptions } from './interfaces';
 
 export class ConstantValueProvider<T = unknown> {
   public constructor(

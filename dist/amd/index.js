@@ -20,5 +20,4 @@ define(["require", "exports", "./decorators", "./constants", "./bootstrap", "./f
     __exportStar(bootstrap_1, exports);
     __exportStar(factorys_1, exports);
     __exportStar(interfaces_1, exports);
-    console.log(11);
 });
