@@ -1,7 +1,7 @@
 import { ClassMirror } from '@geckoai/class-mirror';
 import { injectable } from 'inversify';
 import { GeckoModuleDecorate } from './interfaces';
-export { inject, injectable, Container } from 'inversify';
+export { inject, injectable, injectFromBase, multiInject, named, optional, postConstruct, preDestroy, tagged, unmanaged, Container } from 'inversify';
 export function ApplyClassDecorators() {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {

@@ -23,7 +23,7 @@
  */
 import { BindingScope } from 'inversify';
 import { GeckoModuleIml } from './interfaces';
-export { inject, injectable, Container } from 'inversify';
+export { inject, injectable, injectFromBase, multiInject, named, optional, postConstruct, preDestroy, tagged, unmanaged, Container } from 'inversify';
 export type { Newable, BindingScope } from 'inversify';
 export declare function ApplyClassDecorators(...args: ClassDecorator[]): ClassDecorator;
 export declare function GeckoModule<TFunction extends Function>(target: TFunction): TFunction | void;

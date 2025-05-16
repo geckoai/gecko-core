@@ -1,11 +1,19 @@
 define(["require", "exports", "@geckoai/class-mirror", "inversify", "./interfaces", "inversify"], function (require, exports, class_mirror_1, inversify_1, interfaces_1, inversify_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.Container = exports.injectable = exports.inject = void 0;
+    exports.Container = exports.unmanaged = exports.tagged = exports.preDestroy = exports.postConstruct = exports.optional = exports.named = exports.multiInject = exports.injectFromBase = exports.injectable = exports.inject = void 0;
     exports.ApplyClassDecorators = ApplyClassDecorators;
     exports.GeckoModule = GeckoModule;
     Object.defineProperty(exports, "inject", { enumerable: true, get: function () { return inversify_2.inject; } });
     Object.defineProperty(exports, "injectable", { enumerable: true, get: function () { return inversify_2.injectable; } });
+    Object.defineProperty(exports, "injectFromBase", { enumerable: true, get: function () { return inversify_2.injectFromBase; } });
+    Object.defineProperty(exports, "multiInject", { enumerable: true, get: function () { return inversify_2.multiInject; } });
+    Object.defineProperty(exports, "named", { enumerable: true, get: function () { return inversify_2.named; } });
+    Object.defineProperty(exports, "optional", { enumerable: true, get: function () { return inversify_2.optional; } });
+    Object.defineProperty(exports, "postConstruct", { enumerable: true, get: function () { return inversify_2.postConstruct; } });
+    Object.defineProperty(exports, "preDestroy", { enumerable: true, get: function () { return inversify_2.preDestroy; } });
+    Object.defineProperty(exports, "tagged", { enumerable: true, get: function () { return inversify_2.tagged; } });
+    Object.defineProperty(exports, "unmanaged", { enumerable: true, get: function () { return inversify_2.unmanaged; } });
     Object.defineProperty(exports, "Container", { enumerable: true, get: function () { return inversify_2.Container; } });
     function ApplyClassDecorators() {
         var args = [];
