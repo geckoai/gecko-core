@@ -22,13 +22,25 @@
  * SOFTWARE.
  */
 
-import { ClassMirror } from '@geckoai/class-mirror';
-import { BindingScope, injectable } from 'inversify';
-import { GeckoModuleDecorate, GeckoModuleIml } from './interfaces';
+import {ClassMirror} from '@geckoai/class-mirror';
+import {BindingScope, injectable} from 'inversify';
+import {GeckoModuleDecorate, GeckoModuleIml} from './interfaces';
 
-export { inject, injectable, Container } from 'inversify';
+export {
+  inject,
+  injectable,
+  injectFromBase,
+  multiInject,
+  named,
+  optional,
+  postConstruct,
+  preDestroy,
+  tagged,
+  unmanaged,
+  Container
+} from 'inversify';
 
-export type { Newable, BindingScope } from 'inversify';
+export type {Newable, BindingScope} from 'inversify';
 
 export function ApplyClassDecorators(...args: ClassDecorator[]): ClassDecorator {
   return (target) => {
@@ -46,7 +58,7 @@ export function GeckoModule(...args: unknown[]): ClassDecorator | (Function | vo
       injectable()
     )(arg as any)
   }
-  const [metadata, scope] = args as [  Partial<GeckoModuleIml>,  BindingScope]
+  const [metadata, scope] = args as [Partial<GeckoModuleIml>, BindingScope]
   return ApplyClassDecorators(
     ClassMirror.createDecorator(new GeckoModuleDecorate(
       metadata
