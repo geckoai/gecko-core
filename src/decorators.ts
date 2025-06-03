@@ -22,14 +22,13 @@
  * SOFTWARE.
  */
 
-import {ClassMirror} from '@geckoai/class-mirror';
-import {BindingScope, injectable} from 'inversify';
-import {GeckoModuleDecorate, GeckoModuleIml} from './interfaces';
+import { ClassMirror } from '@geckoai/class-mirror';
+import { BindingScope, injectable, injectFromBase } from 'inversify';
+import { GeckoModuleDecorate, GeckoModuleIml, InjectFromBaseOptions } from './interfaces';
 
 export {
   inject,
   injectable,
-  injectFromBase,
   multiInject,
   named,
   optional,
@@ -40,7 +39,7 @@ export {
   Container
 } from 'inversify';
 
-export type {Newable, BindingScope} from 'inversify';
+export type { Newable, BindingScope } from 'inversify';
 
 export function ApplyClassDecorators(...args: ClassDecorator[]): ClassDecorator {
   return (target) => {
@@ -56,13 +55,21 @@ export function GeckoModule(...args: unknown[]): ClassDecorator | (Function | vo
     return ApplyClassDecorators(
       ClassMirror.createDecorator(new GeckoModuleDecorate<null>(null)),
       injectable()
-    )(arg as any)
+    )(arg as any);
   }
-  const [metadata, scope] = args as [Partial<GeckoModuleIml>, BindingScope]
-  return ApplyClassDecorators(
-    ClassMirror.createDecorator(new GeckoModuleDecorate(
+  const [metadata, scope] = args as [Partial<GeckoModuleIml>, BindingScope];
+  return ApplyClassDecorators(ClassMirror.createDecorator(new GeckoModuleDecorate(
       metadata
     )),
     injectable(scope)
   );
+}
+
+export function UseBase<TFunction extends Function>(target: TFunction): TFunction | void;
+export function UseBase(options?: InjectFromBaseOptions): ClassDecorator;
+export function UseBase<TFunction extends Function>(arg: TFunction | InjectFromBaseOptions): ClassDecorator | (TFunction | void) {
+  if (typeof arg === 'function') {
+    return injectFromBase()(arg);
+  }
+  return injectFromBase(arg);
 }

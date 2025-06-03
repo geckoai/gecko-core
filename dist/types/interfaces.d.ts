@@ -31,6 +31,10 @@ export interface GeckoModuleIml {
     providers: Provider[];
     exports: Provider[];
 }
+export interface InjectFromBaseOptions {
+    extendConstructorArguments?: boolean | undefined;
+    extendProperties?: boolean | undefined;
+}
 export declare class GeckoModuleDecorate<T extends GeckoModuleIml | null = GeckoModuleIml> extends ClassDecorate<Partial<T>> {
 }
 export type ResolvedValueMetadataInjectOptions<T> = [T] extends [
