@@ -26,17 +26,18 @@ import type { MetadataName, MetadataTag } from '@inversifyjs/core';
 import type { LazyServiceIdentifier, Newable, ServiceIdentifier } from 'inversify';
 import { ClassDecorate } from '@geckoai/class-mirror';
 
-import type {
+import {
   ClassProvider,
   ConstantValueProvider,
   ConstructorProvider,
   DynamicValueProvider,
-  ExistingProvider,
+  ExistingProvider, FactoryProvider,
   ResolvedValueProvider
 } from './factorys';
 
 export type Provider =
   ConstantValueProvider<any>
+  | FactoryProvider<any>
   | DynamicValueProvider<any>
   | ResolvedValueProvider<any, any>
   | ClassProvider<any>
