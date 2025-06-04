@@ -91,13 +91,12 @@ export class ExistingProvider<T = unknown> {
 export class FactoryProvider<T = unknown> {
   public constructor(
     public provide: ServiceIdentifier<T>,
-    public useFactory: <T>(context?: ResolutionContext) => T
-  ) {
-  }
+    public useFactory: (context?: ResolutionContext) => T
+  ) { }
 
   public static create<T>(
     provide: ServiceIdentifier<T>,
-    useFactory: <T>(context?: ResolutionContext) => T
+    useFactory: (context?: ResolutionContext) => T
   ) {
     return new FactoryProvider<T>(provide, useFactory);
   }

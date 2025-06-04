@@ -127,7 +127,7 @@ export class Bootstrap {
       }
 
       if (useFactory) {
-        container.bind<Factory<unknown, any>>(provide).toFactory(useFactory);
+        container.bind<Factory<unknown, any>>(provide).toFactory(useFactory  as any);
         continue;
       }
 
