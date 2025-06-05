@@ -12,7 +12,7 @@ var __createBinding = (this && this.__createBinding) || (Object.create ? (functi
 var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
-define(["require", "exports", "./decorators", "./constants", "./bootstrap", "./factorys", "./interfaces"], function (require, exports, decorators_1, constants_1, bootstrap_1, factorys_1, interfaces_1) {
+define(["require", "exports", "./decorators", "./constants", "./bootstrap", "./factorys", "./interfaces", "./view-model"], function (require, exports, decorators_1, constants_1, bootstrap_1, factorys_1, interfaces_1, view_model_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     __exportStar(decorators_1, exports);
@@ -20,4 +20,5 @@ define(["require", "exports", "./decorators", "./constants", "./bootstrap", "./f
     __exportStar(bootstrap_1, exports);
     __exportStar(factorys_1, exports);
     __exportStar(interfaces_1, exports);
+    __exportStar(view_model_1, exports);
 });

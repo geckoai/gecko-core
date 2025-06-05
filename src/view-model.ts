@@ -16,9 +16,7 @@ export class ViewModel<T> extends Subject<T>{
   public asState(): [T, Dispatch<SetStateAction<T>>] {
     const [state, setState] = useState(this.current)
     useEffect(() => {
-      const subscribe = this.subscribe((value) => {
-        setState(value);
-      });
+      const subscribe = this.subscribe(setState);
       return () => subscribe.unsubscribe();
     }, [state, setState])
 
