@@ -57,9 +57,9 @@ export declare class ExistingProvider<T = unknown> {
 }
 export declare class FactoryProvider<T = unknown> {
     provide: ServiceIdentifier<T>;
-    useFactory: <T>(context?: ResolutionContext) => T;
-    constructor(provide: ServiceIdentifier<T>, useFactory: <T>(context?: ResolutionContext) => T);
-    static create<T>(provide: ServiceIdentifier<T>, useFactory: <T>(context?: ResolutionContext) => T): FactoryProvider<T>;
+    useFactory: (context?: ResolutionContext) => T;
+    constructor(provide: ServiceIdentifier<T>, useFactory: (context?: ResolutionContext) => T);
+    static create<T>(provide: ServiceIdentifier<T>, useFactory: (context?: ResolutionContext) => T): FactoryProvider<T>;
 }
 export declare class ResolvedValueProvider<T = unknown, A = unknown> {
     provide: ServiceIdentifier<T>;
