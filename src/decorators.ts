@@ -47,9 +47,9 @@ export function ApplyClassDecorators(...args: ClassDecorator[]): ClassDecorator 
   };
 }
 
-export function GeckoModule<TFunction extends Function>(target: TFunction): TFunction | void;
-export function GeckoModule(metadata: Partial<GeckoModuleIml>, scope?: BindingScope): ClassDecorator;
-export function GeckoModule(...args: unknown[]): ClassDecorator | (Function | void) {
+export function Module<TFunction extends Function>(target: TFunction): TFunction | void;
+export function Module(metadata: Partial<GeckoModuleIml>, scope?: BindingScope): ClassDecorator;
+export function Module(...args: unknown[]): ClassDecorator | (Function | void) {
   const arg = args[0];
   if (typeof arg === 'function') {
     return ApplyClassDecorators(

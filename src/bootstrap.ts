@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-import { ClassMirror } from '@geckoai/class-mirror';
-import { BindingScope, BindInWhenOnFluentSyntax, Container, Factory, Newable } from 'inversify';
-import { GeckoModuleDecorate, GeckoModuleIml, Provider } from './interfaces';
+import {ClassMirror} from '@geckoai/class-mirror';
+import {BindingScope, BindInWhenOnFluentSyntax, Container, Factory, Newable} from 'inversify';
+import {GeckoModuleDecorate, GeckoModuleIml, Provider} from './interfaces';
 import {
   ClassProvider,
   ConstantValueProvider,
@@ -34,20 +34,21 @@ import {
   FactoryProvider,
   ResolvedValueProvider
 } from './factorys';
-import { Constants } from './constants';
+import {Constants} from './constants';
 
 export interface LoadedModule<T = unknown> {
-  instance: T;
   module: Newable<T>;
+  instance: T,
   container: Container;
-  exports:  Provider[];
+  exports: Provider[];
   imports: Newable[];
   loadedModules: LoadedModule[];
 }
 
+
 export class Bootstrap {
-  public static run<T extends object>(app: Newable<T>): LoadedModule<T> {
-    return Bootstrap.module(app);
+  public static run<T extends object>(app: Newable<T>): T {
+    return Bootstrap.module(app).container.get<T>(app);
   }
 
   private static useScope<T>(bind: BindInWhenOnFluentSyntax<T>, scope?: BindingScope): void {
@@ -67,15 +68,13 @@ export class Bootstrap {
     const classMirror = ClassMirror.reflect(module);
     const allDecorates = classMirror.getAllDecorates(GeckoModuleDecorate);
 
-    const container = new Container({ parent });
+    const container = new Container({parent});
 
     container.bind(Constants.module).toConstantValue(module);
 
     container.bind(ClassMirror).toConstantValue(classMirror)
 
-    if (parent) {
-      container.bind(Constants.parent).toConstantValue(parent);
-    }
+    if (parent) container.bind(Constants.parent).toConstantValue(parent);
 
     container.bind(Container).toConstantValue(container);
 
@@ -86,7 +85,7 @@ export class Bootstrap {
     };
 
     allDecorates.forEach(decorator => {
-      const { providers, imports, exports } = decorator.metadata || {};
+      const {providers, imports, exports} = decorator.metadata || {};
       if (providers) object.providers.push(...providers);
       if (imports) object.imports.push(...imports);
       if (exports) object.exports.push(...exports);
@@ -127,7 +126,7 @@ export class Bootstrap {
       }
 
       if (useFactory) {
-        container.bind<Factory<unknown, any>>(provide).toFactory(useFactory  as any);
+        container.bind<Factory<unknown, any>>(provide).toFactory(useFactory as any);
         continue;
       }
 
@@ -144,12 +143,11 @@ export class Bootstrap {
     }
 
     // 导入
-    const loadedModules = Array.from(new Set(object.imports)).map(imp =>  {
+    const loadedModules = Array.from(new Set(object.imports)).map(imp => {
       const result = Bootstrap.module(imp as Newable<object>, container);
-
       // 判断当前导入的是否也导出了
       if (object.exports.includes(imp)) {
-          // 把导入这个模块的导出也附加到当前范围
+        // 把导入这个模块的导出也附加到当前范围
         object.exports.push(...result.exports)
       }
       return result;
@@ -172,14 +170,16 @@ export class Bootstrap {
 
     // 当前实例
     container.bind(module).toSelf().inSingletonScope();
+    container.bind(Constants.instance).toService(module);
 
     return {
       module,
-      instance: container.get<T>(module),
+      instance: container.get(module),
       container,
       loadedModules,
       imports: object.imports,
       exports: object.exports,
     };
   }
+
 }
