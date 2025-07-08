@@ -90,11 +90,15 @@ var Bootstrap = (function () {
         container.bind(constants_1.Constants.children).toConstantValue(loadedModules.map(function (it) { return it.container; }));
         var _loop_1 = function (exp) {
             if (typeof exp === 'function') {
-                parent === null || parent === void 0 ? void 0 : parent.bind(exp).toResolvedValue(function () { return container.get(exp); });
+                if (parent === null || parent === void 0 ? void 0 : parent.isBound(exp)) {
+                    parent === null || parent === void 0 ? void 0 : parent.bind(exp).toResolvedValue(function () { return container.get(exp); });
+                }
                 return "continue";
             }
             var provide = exp.provide;
-            parent === null || parent === void 0 ? void 0 : parent.bind(provide).toResolvedValue(function () { return container.get(provide); });
+            if (!(parent === null || parent === void 0 ? void 0 : parent.isBound(provide))) {
+                parent === null || parent === void 0 ? void 0 : parent.bind(provide).toResolvedValue(function () { return container.get(provide); });
+            }
         };
         for (var _c = 0, _d = Array.from(new Set(object.exports)); _c < _d.length; _c++) {
             var exp = _d[_c];

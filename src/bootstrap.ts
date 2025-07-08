@@ -159,13 +159,17 @@ export class Bootstrap {
     // 导出
     for (const exp of Array.from(new Set(object.exports))) {
       if (typeof exp === 'function') {
-        parent?.bind(exp).toResolvedValue(() => container.get(exp));
+        if (parent?.isBound(exp)) {
+          parent?.bind(exp).toResolvedValue(() => container.get(exp));
+        }
         continue;
       }
       const {
         provide
       } = exp as (ConstantValueProvider & DynamicValueProvider & ClassProvider & FactoryProvider & ExistingProvider & ResolvedValueProvider & ConstructorProvider);
-      parent?.bind(provide).toResolvedValue(() => container.get(provide));
+      if (!parent?.isBound(provide)) {
+        parent?.bind(provide).toResolvedValue(() => container.get(provide));
+      }
     }
 
     // 当前实例
