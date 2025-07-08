@@ -159,7 +159,7 @@ export class Bootstrap {
     // 导出
     for (const exp of Array.from(new Set(object.exports))) {
       if (typeof exp === 'function') {
-        if (parent?.isBound(exp)) {
+        if (!parent?.isBound(exp)) {
           parent?.bind(exp).toResolvedValue(() => container.get(exp));
         }
         continue;
