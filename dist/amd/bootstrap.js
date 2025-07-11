@@ -87,13 +87,13 @@ define(["require", "exports", "@geckoai/class-mirror", "inversify", "./interface
             container.bind(constants_1.Constants.children).toConstantValue(loadedModules.map(function (it) { return it.container; }));
             var _loop_1 = function (exp) {
                 if (typeof exp === 'function') {
-                    if (!(parent === null || parent === void 0 ? void 0 : parent.isBound(exp))) {
+                    if (!(parent === null || parent === void 0 ? void 0 : parent.isCurrentBound(exp))) {
                         parent === null || parent === void 0 ? void 0 : parent.bind(exp).toResolvedValue(function () { return container.get(exp); });
                     }
                     return "continue";
                 }
                 var provide = exp.provide;
-                if (!(parent === null || parent === void 0 ? void 0 : parent.isBound(provide))) {
+                if (!(parent === null || parent === void 0 ? void 0 : parent.isCurrentBound(provide))) {
                     parent === null || parent === void 0 ? void 0 : parent.bind(provide).toResolvedValue(function () { return container.get(provide); });
                 }
             };

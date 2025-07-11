@@ -159,7 +159,7 @@ export class Bootstrap {
     // 导出
     for (const exp of Array.from(new Set(object.exports))) {
       if (typeof exp === 'function') {
-        if (!parent?.isBound(exp)) {
+        if (!parent?.isCurrentBound(exp)) {
           parent?.bind(exp).toResolvedValue(() => container.get(exp));
         }
         continue;
@@ -167,7 +167,7 @@ export class Bootstrap {
       const {
         provide
       } = exp as (ConstantValueProvider & DynamicValueProvider & ClassProvider & FactoryProvider & ExistingProvider & ResolvedValueProvider & ConstructorProvider);
-      if (!parent?.isBound(provide)) {
+      if (!parent?.isCurrentBound(provide)) {
         parent?.bind(provide).toResolvedValue(() => container.get(provide));
       }
     }
