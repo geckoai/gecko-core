@@ -120,7 +120,7 @@ export class Bootstrap {
    * @param app
    * @param providers
    */
-  public static runModuleWith<T extends object>(app: Newable<T>, providers: Provider[]): LoadedModule<T> {
+  public static runModuleWithProvide<T extends object>(app: Newable<T>, providers: Provider[]): LoadedModule<T> {
     const container = new Container();
     for (const provider of providers) {
       if (typeof provider === 'function') {

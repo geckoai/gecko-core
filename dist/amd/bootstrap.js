@@ -44,7 +44,7 @@ define(["require", "exports", "@geckoai/class-mirror", "inversify", "./interface
             }
             return Bootstrap.module(app, container).container.get(app);
         };
-        Bootstrap.runModuleWith = function (app, providers) {
+        Bootstrap.runModuleWithProvide = function (app, providers) {
             var container = new inversify_1.Container();
             for (var _i = 0, providers_2 = providers; _i < providers_2.length; _i++) {
                 var provider = providers_2[_i];
