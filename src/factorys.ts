@@ -32,6 +32,11 @@ export class ConstantValueProvider<T = unknown> {
   ) {
   }
 
+  /**
+   * 直接绑定静态常量值到容器，该值不会被重新计算或改变。适用于配置项、全局常量等不变值
+   * @param provide
+   * @param value
+   */
   public static create<T>(provide: ServiceIdentifier<T>, value: T): ConstantValueProvider<T> {
     return new ConstantValueProvider<T>(provide, value);
   }
@@ -45,6 +50,12 @@ export class DynamicValueProvider<T = unknown> {
   ) {
   }
 
+  /**
+   * 类似于Factory但更轻量，通过函数延迟生成值，每次请求依赖时都会重新执行函数。适用于需要每次获取新值的场景，如配置动态参数
+   * @param provide
+   * @param builder
+   * @param scope
+   */
   public static create<T>(provide: ServiceIdentifier<T>, builder: DynamicValueBuilder<T>, scope?: BindingScope) {
     return new DynamicValueProvider<T>(provide, builder, scope);
   }
@@ -83,6 +94,11 @@ export class ExistingProvider<T = unknown> {
   ) {
   }
 
+  /**
+   * 将服务绑定到另一个已存在的服务标识符，实现别名功能。本质上是对已有绑定的引用，不会创建新实例
+   * @param provide
+   * @param useExisting
+   */
   public static create<T>(provide: ServiceIdentifier<T>, useExisting: ServiceIdentifier<T>) {
     return new ExistingProvider<T>(provide, useExisting);
   }
@@ -94,6 +110,11 @@ export class FactoryProvider<T = unknown> {
     public useFactory: (context?: ResolutionContext) => T
   ) { }
 
+  /**
+   * 允许通过工厂函数动态创建实例，每次请求依赖时都会调用工厂函数生成新实例。适合需要复杂初始化逻辑或运行时决定实例化方式的场景
+   * @param provide
+   * @param useFactory
+   */
   public static create<T>(
     provide: ServiceIdentifier<T>,
     useFactory: (context?: ResolutionContext) => T
@@ -111,6 +132,10 @@ export class ResolvedValueProvider<T = unknown, A = unknown> {
   ) {
   }
 
+  /**
+   * 用于直接绑定一个已解析的值到容器中，该值会在绑定时就立即解析并固定。适用于需要预先计算并缓存结果的场景
+   * @param options
+   */
   public static create<T, A extends []>(options: ResolvedValueProvider<T, A>) {
     return new ResolvedValueProvider<T, A>(options.provide, options.useResolvedValueFactory, options.deps, options.scope);
   }

@@ -41,17 +41,29 @@ export declare class Bootstrap {
      */
     static run<T extends object>(app: Newable<T>): T;
     /**
-     * Start a new application with providers
+     * Run a new application with providers
      * @param app
      * @param providers
      */
     static runWithProvide<T extends object>(app: Newable<T>, providers: Provider[]): T;
     /**
-     * Start a new application with parent
+     * Run a new module with providers
+     * @param app
+     * @param providers
+     */
+    static runModuleWith<T extends object>(app: Newable<T>, providers: Provider[]): LoadedModule<T>;
+    /**
+     * Run a new application with parent
      * @param app
      * @param parent
      */
     static runWithParent<T extends object>(app: Newable<T>, parent: Container): T;
+    /**
+     * Run a new module with parent
+     * @param app
+     * @param parent
+     */
+    static runModuleWithParent<T extends object>(app: Newable<T>, parent: Container): LoadedModule<T>;
     private static useScope;
     private static module;
 }

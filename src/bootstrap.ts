@@ -58,12 +58,12 @@ export class Bootstrap {
   }
 
   /**
-   * Start a new application with providers
+   * Run a new application with providers
    * @param app
    * @param providers
    */
   public static runWithProvide<T extends object>(app: Newable<T>, providers: Provider[]): T {
-    var container = new Container();
+    const container = new Container();
     for (const provider of providers) {
       if (typeof provider === 'function') {
         container.bind(provider).to(provider);
@@ -116,12 +116,80 @@ export class Bootstrap {
   }
 
   /**
-   * Start a new application with parent
+   * Run a new module with providers
+   * @param app
+   * @param providers
+   */
+  public static runModuleWith<T extends object>(app: Newable<T>, providers: Provider[]): LoadedModule<T> {
+    const container = new Container();
+    for (const provider of providers) {
+      if (typeof provider === 'function') {
+        container.bind(provider).to(provider);
+        continue;
+      }
+
+      const {
+        scope,
+        provide,
+        useConstantValue,
+        useDynamicValue,
+        useFactory,
+        useClass,
+        useExisting,
+        useResolvedValueFactory,
+        deps
+      } = provider as (ConstantValueProvider & DynamicValueProvider & ClassProvider & FactoryProvider & ExistingProvider & ResolvedValueProvider & ConstructorProvider);
+
+      if (useConstantValue) {
+        container.bind(provide).toConstantValue(useConstantValue);
+        continue;
+      }
+
+      if (useDynamicValue) {
+        Bootstrap.useScope(container.bind(provide).toDynamicValue(useDynamicValue));
+      }
+
+      if (useClass && typeof useClass === 'function') {
+        Bootstrap.useScope(container.bind(provide).to(useClass), scope);
+        continue;
+      }
+
+      if (useFactory) {
+        container.bind<Factory<unknown, any>>(provide).toFactory(useFactory as any);
+        continue;
+      }
+
+      if (useExisting) {
+        container.bind(provide).toService(useExisting);
+        continue;
+      }
+
+      if (useResolvedValueFactory) {
+        Bootstrap.useScope(container.bind(provide).toResolvedValue(useResolvedValueFactory, deps as any));
+        continue;
+      }
+      Bootstrap.useScope(container.bind(provide).to(provide));
+    }
+    return Bootstrap.module(app, container)
+  }
+
+
+  /**
+   * Run a new application with parent
    * @param app
    * @param parent
    */
   public static runWithParent<T extends object>(app: Newable<T>, parent: Container): T {
     return Bootstrap.module(app, parent).container.get<T>(app);
+  }
+
+  /**
+   * Run a new module with parent
+   * @param app
+   * @param parent
+   */
+  public static runModuleWithParent<T extends object>(app: Newable<T>, parent: Container): LoadedModule<T> {
+    return Bootstrap.module(app, parent)
   }
 
   private static useScope<T>(bind: BindInWhenOnFluentSyntax<T>, scope?: BindingScope): void {
