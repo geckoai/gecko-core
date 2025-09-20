@@ -31,8 +31,27 @@ export interface LoadedModule<T = unknown> {
     imports: Newable[];
     loadedModules: LoadedModule[];
 }
+/**
+ * Bootstrap util
+ */
 export declare class Bootstrap {
+    /**
+     * Start a new application
+     * @param app
+     */
     static run<T extends object>(app: Newable<T>): T;
+    /**
+     * Start a new application with providers
+     * @param app
+     * @param providers
+     */
+    static runWithProvide<T extends object>(app: Newable<T>, providers: Provider[]): T;
+    /**
+     * Start a new application with parent
+     * @param app
+     * @param parent
+     */
+    static runWithParent<T extends object>(app: Newable<T>, parent: Container): T;
     private static useScope;
     private static module;
 }

@@ -8,6 +8,45 @@ var Bootstrap = (function () {
     Bootstrap.run = function (app) {
         return Bootstrap.module(app).container.get(app);
     };
+    Bootstrap.runWithProvide = function (app, providers) {
+        var container = new Container();
+        for (var _i = 0, providers_1 = providers; _i < providers_1.length; _i++) {
+            var provider = providers_1[_i];
+            if (typeof provider === 'function') {
+                container.bind(provider).to(provider);
+                continue;
+            }
+            var _a = provider, scope = _a.scope, provide = _a.provide, useConstantValue = _a.useConstantValue, useDynamicValue = _a.useDynamicValue, useFactory = _a.useFactory, useClass = _a.useClass, useExisting = _a.useExisting, useResolvedValueFactory = _a.useResolvedValueFactory, deps = _a.deps;
+            if (useConstantValue) {
+                container.bind(provide).toConstantValue(useConstantValue);
+                continue;
+            }
+            if (useDynamicValue) {
+                Bootstrap.useScope(container.bind(provide).toDynamicValue(useDynamicValue));
+            }
+            if (useClass && typeof useClass === 'function') {
+                Bootstrap.useScope(container.bind(provide).to(useClass), scope);
+                continue;
+            }
+            if (useFactory) {
+                container.bind(provide).toFactory(useFactory);
+                continue;
+            }
+            if (useExisting) {
+                container.bind(provide).toService(useExisting);
+                continue;
+            }
+            if (useResolvedValueFactory) {
+                Bootstrap.useScope(container.bind(provide).toResolvedValue(useResolvedValueFactory, deps));
+                continue;
+            }
+            Bootstrap.useScope(container.bind(provide).to(provide));
+        }
+        return Bootstrap.module(app, container).container.get(app);
+    };
+    Bootstrap.runWithParent = function (app, parent) {
+        return Bootstrap.module(app, parent).container.get(app);
+    };
     Bootstrap.useScope = function (bind, scope) {
         switch (scope) {
             case 'Transient':
