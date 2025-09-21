@@ -25,24 +25,26 @@ var DynamicValueProvider = (function () {
 }());
 exports.DynamicValueProvider = DynamicValueProvider;
 var ConstructorProvider = (function () {
-    function ConstructorProvider(provide, scope) {
+    function ConstructorProvider(provide, scope, providers) {
         this.provide = provide;
         this.scope = scope;
+        this.providers = providers;
     }
-    ConstructorProvider.create = function (provide, scope) {
-        return new ConstructorProvider(provide, scope);
+    ConstructorProvider.create = function (provide, scope, providers) {
+        return new ConstructorProvider(provide, scope, providers);
     };
     return ConstructorProvider;
 }());
 exports.ConstructorProvider = ConstructorProvider;
 var ClassProvider = (function () {
-    function ClassProvider(provide, useClass, scope) {
+    function ClassProvider(provide, useClass, scope, providers) {
         this.provide = provide;
         this.useClass = useClass;
         this.scope = scope;
+        this.providers = providers;
     }
-    ClassProvider.create = function (provide, newable, scope) {
-        return new ClassProvider(provide, newable, scope);
+    ClassProvider.create = function (provide, newable, scope, providers) {
+        return new ClassProvider(provide, newable, scope, providers);
     };
     return ClassProvider;
 }());

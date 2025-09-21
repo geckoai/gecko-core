@@ -227,11 +227,10 @@ export class Bootstrap {
 
     allDecorates.forEach(decorator => {
       const {providers, imports, exports} = decorator.metadata || {};
-      if (providers) object.providers.push(...providers);
+      if (providers) object.providers.push(...providers, ...providers.flatMap(it => ((it as ClassProvider)?.providers ?? [])));
       if (imports) object.imports.push(...imports);
       if (exports) object.exports.push(...exports);
     });
-
 
     // 提供
     for (const provider of Array.from(new Set(object.providers))) {

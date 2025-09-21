@@ -1,4 +1,13 @@
 "use strict";
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Bootstrap = void 0;
 var class_mirror_1 = require("@geckoai/class-mirror");
@@ -119,7 +128,7 @@ var Bootstrap = (function () {
             var _a, _b, _c;
             var _d = decorator.metadata || {}, providers = _d.providers, imports = _d.imports, exports = _d.exports;
             if (providers)
-                (_a = object.providers).push.apply(_a, providers);
+                (_a = object.providers).push.apply(_a, __spreadArray(__spreadArray([], providers, false), providers.flatMap(function (it) { var _a; return ((_a = it === null || it === void 0 ? void 0 : it.providers) !== null && _a !== void 0 ? _a : []); }), false));
             if (imports)
                 (_b = object.imports).push.apply(_b, imports);
             if (exports)

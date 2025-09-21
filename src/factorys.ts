@@ -23,7 +23,7 @@
  */
 
 import { BindingScope, DynamicValueBuilder, Newable, ResolutionContext, ServiceIdentifier } from 'inversify';
-import { MapToResolvedValueInjectOptions } from './interfaces';
+import {MapToResolvedValueInjectOptions, Provider} from './interfaces';
 
 export class ConstantValueProvider<T = unknown> {
   public constructor(
@@ -64,12 +64,13 @@ export class DynamicValueProvider<T = unknown> {
 export class ConstructorProvider<T = unknown> {
   public constructor(
     public provide: Newable<T>,
-    public scope?: BindingScope
+    public scope?: BindingScope,
+    public providers?: Provider[]
   ) {
   }
 
-  public static create<T>(provide: Newable<T>, scope?: BindingScope) {
-    return new ConstructorProvider<T>(provide, scope);
+  public static create<T>(provide: Newable<T>, scope?: BindingScope, providers?: Provider[]) {
+    return new ConstructorProvider<T>(provide, scope, providers);
   }
 }
 
@@ -78,12 +79,13 @@ export class ClassProvider<T = unknown> {
   public constructor(
     public provide: ServiceIdentifier<T>,
     public useClass: Newable<T>,
-    public scope?: BindingScope
+    public scope?: BindingScope,
+    public providers?: Provider[],
   ) {
   }
 
-  public static create<T>(provide: ServiceIdentifier<T>, newable: Newable<T>, scope?: BindingScope) {
-    return new ClassProvider<T>(provide, newable, scope);
+  public static create<T>(provide: ServiceIdentifier<T>, newable: Newable<T>, scope?: BindingScope, providers?: Provider[]) {
+    return new ClassProvider<T>(provide, newable, scope, providers);
   }
 }
 

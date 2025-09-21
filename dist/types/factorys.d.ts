@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 import { BindingScope, DynamicValueBuilder, Newable, ResolutionContext, ServiceIdentifier } from 'inversify';
-import { MapToResolvedValueInjectOptions } from './interfaces';
+import { MapToResolvedValueInjectOptions, Provider } from './interfaces';
 export declare class ConstantValueProvider<T = unknown> {
     provide: ServiceIdentifier<T>;
     useConstantValue: T;
@@ -50,15 +50,17 @@ export declare class DynamicValueProvider<T = unknown> {
 export declare class ConstructorProvider<T = unknown> {
     provide: Newable<T>;
     scope?: BindingScope;
-    constructor(provide: Newable<T>, scope?: BindingScope);
-    static create<T>(provide: Newable<T>, scope?: BindingScope): ConstructorProvider<T>;
+    providers?: Provider[];
+    constructor(provide: Newable<T>, scope?: BindingScope, providers?: Provider[]);
+    static create<T>(provide: Newable<T>, scope?: BindingScope, providers?: Provider[]): ConstructorProvider<T>;
 }
 export declare class ClassProvider<T = unknown> {
     provide: ServiceIdentifier<T>;
     useClass: Newable<T>;
     scope?: BindingScope;
-    constructor(provide: ServiceIdentifier<T>, useClass: Newable<T>, scope?: BindingScope);
-    static create<T>(provide: ServiceIdentifier<T>, newable: Newable<T>, scope?: BindingScope): ClassProvider<T>;
+    providers?: Provider[];
+    constructor(provide: ServiceIdentifier<T>, useClass: Newable<T>, scope?: BindingScope, providers?: Provider[]);
+    static create<T>(provide: ServiceIdentifier<T>, newable: Newable<T>, scope?: BindingScope, providers?: Provider[]): ClassProvider<T>;
 }
 export declare class ExistingProvider<T = unknown> {
     provide: ServiceIdentifier<T>;
