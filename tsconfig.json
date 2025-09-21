@@ -7,6 +7,7 @@
       "esnext"
     ],
     "baseUrl": ".",
+    "rootDir": "src",
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -17,12 +18,11 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "strictPropertyInitialization": false,
-    "module": "esnext",
+    "module": "ESNext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": false,
-    "noEmit": true,
-    "rootDir": "src"
+    "noEmit": true
   },
   "typeAcquisition": {
     "enable": false
@@ -31,6 +31,8 @@
     "eslint.config.mjs",
     "dist",
     "node_modules",
-    "**/*.spec.ts"
+    "test/**/*.spec.ts",
+    "sample",
+    "test"
   ]
 }

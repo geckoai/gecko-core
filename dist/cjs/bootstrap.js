@@ -113,6 +113,9 @@ var Bootstrap = (function () {
     Bootstrap.module = function (module, parent) {
         var classMirror = class_mirror_1.ClassMirror.reflect(module);
         var allDecorates = classMirror.getAllDecorates(interfaces_1.GeckoModuleDecorate);
+        if (allDecorates.length == 0) {
+            throw new Error("The imported module ".concat(module.name, " must be decorated with @Module"));
+        }
         var container = new inversify_1.Container({ parent: parent });
         container.bind(constants_1.Constants.module).toConstantValue(module);
         container.bind(class_mirror_1.ClassMirror).toConstantValue(classMirror);

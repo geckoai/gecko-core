@@ -209,6 +209,10 @@ export class Bootstrap {
     const classMirror = ClassMirror.reflect(module);
     const allDecorates = classMirror.getAllDecorates(GeckoModuleDecorate);
 
+    if (allDecorates.length == 0) {
+      throw new Error(`The imported module ${module.name} must be decorated with @Module`);
+    }
+
     const container = new Container({parent});
 
     container.bind(Constants.module).toConstantValue(module);
