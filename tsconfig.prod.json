@@ -4,6 +4,7 @@
     "strict": false,
     "declaration": false,
     "incremental": true,
+    "rootDir": "src",
     "outDir": "./dist",
     "removeComments": true,
     "tsBuildInfoFile": "./dist/tsconfig.prod.cjs.tsbuildinfo",

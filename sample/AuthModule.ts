@@ -1,6 +1,6 @@
 import {Module} from "../src";
 
 @Module({
-  providers: [AuthModule]
+  providers: [AuthModule],
 })
 export class AuthModule {}

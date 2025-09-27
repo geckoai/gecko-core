@@ -6,8 +6,7 @@
       "dom.iterable",
       "esnext"
     ],
-    "baseUrl": ".",
-    "rootDir": "src",
+    "rootDirs": [".", "src"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -34,5 +33,12 @@
     "test/**/*.spec.ts",
     "sample",
     "test"
-  ]
+  ],
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS",
+      "strict": false,
+      "emitDecoratorMetadata": true,
+    }
+  }
 }

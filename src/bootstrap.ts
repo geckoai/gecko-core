@@ -283,6 +283,7 @@ export class Bootstrap {
         Bootstrap.useScope(container.bind(provide).toResolvedValue(useResolvedValueFactory, deps as any));
         continue;
       }
+
       Bootstrap.useScope(container.bind(provide).to(provide));
     }
 
@@ -294,27 +295,32 @@ export class Bootstrap {
         // 把导入这个模块的导出也附加到当前范围
         object.exports.push(...result.exports)
       }
+      result.exports.forEach((it) => {
+        if (typeof it === 'function') {
+          // 父未绑定
+          if (!parent?.isCurrentBound(it)) {
+            parent?.bind(it).toResolvedValue(() => result.container.get(it))
+          }
+        } else {
+          const {
+            provide
+          } = it as (ConstantValueProvider & DynamicValueProvider & ClassProvider & FactoryProvider & ExistingProvider & ResolvedValueProvider & ConstructorProvider);
+
+          // 父未绑定
+          if (!parent?.isCurrentBound(provide)) {
+            parent?.bind(provide).toResolvedValue(() => result.container.get(provide))
+            // 取消绑定
+            result.container.onDeactivation(provide, () => {
+              parent?.unbind(provide)
+            })
+          }
+        }
+      })
       return result;
     });
 
     // 所有子
     container.bind(Constants.children).toConstantValue(loadedModules.map(it => it.container));
-
-    // 导出
-    for (const exp of Array.from(new Set(object.exports))) {
-      if (typeof exp === 'function') {
-        if (!parent?.isCurrentBound(exp)) {
-          parent?.bind(exp).toResolvedValue(() => container.get(exp));
-        }
-        continue;
-      }
-      const {
-        provide
-      } = exp as (ConstantValueProvider & DynamicValueProvider & ClassProvider & FactoryProvider & ExistingProvider & ResolvedValueProvider & ConstructorProvider);
-      if (!parent?.isCurrentBound(provide)) {
-        parent?.bind(provide).toResolvedValue(() => container.get(provide));
-      }
-    }
 
     // 当前实例
     container.bind(module).toSelf().inSingletonScope();

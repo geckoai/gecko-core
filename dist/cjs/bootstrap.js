@@ -175,25 +175,25 @@ var Bootstrap = (function () {
             if (object.exports.includes(imp)) {
                 (_a = object.exports).push.apply(_a, result.exports);
             }
+            result.exports.forEach(function (it) {
+                if (typeof it === 'function') {
+                    if (!(parent === null || parent === void 0 ? void 0 : parent.isCurrentBound(it))) {
+                        parent === null || parent === void 0 ? void 0 : parent.bind(it).toResolvedValue(function () { return result.container.get(it); });
+                    }
+                }
+                else {
+                    var provide_1 = it.provide;
+                    if (!(parent === null || parent === void 0 ? void 0 : parent.isCurrentBound(provide_1))) {
+                        parent === null || parent === void 0 ? void 0 : parent.bind(provide_1).toResolvedValue(function () { return result.container.get(provide_1); });
+                        result.container.onDeactivation(provide_1, function () {
+                            parent === null || parent === void 0 ? void 0 : parent.unbind(provide_1);
+                        });
+                    }
+                }
+            });
             return result;
         });
         container.bind(constants_1.Constants.children).toConstantValue(loadedModules.map(function (it) { return it.container; }));
-        var _loop_1 = function (exp) {
-            if (typeof exp === 'function') {
-                if (!(parent === null || parent === void 0 ? void 0 : parent.isCurrentBound(exp))) {
-                    parent === null || parent === void 0 ? void 0 : parent.bind(exp).toResolvedValue(function () { return container.get(exp); });
-                }
-                return "continue";
-            }
-            var provide = exp.provide;
-            if (!(parent === null || parent === void 0 ? void 0 : parent.isCurrentBound(provide))) {
-                parent === null || parent === void 0 ? void 0 : parent.bind(provide).toResolvedValue(function () { return container.get(provide); });
-            }
-        };
-        for (var _c = 0, _d = Array.from(new Set(object.exports)); _c < _d.length; _c++) {
-            var exp = _d[_c];
-            _loop_1(exp);
-        }
         container.bind(module).toSelf().inSingletonScope();
         container.bind(constants_1.Constants.instance).toService(module);
         return {
