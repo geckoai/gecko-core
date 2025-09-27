@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 import { BindingScope, DynamicValueBuilder, Newable, ResolutionContext, ServiceIdentifier } from 'inversify';
-import { MapToResolvedValueInjectOptions, Provider } from './interfaces';
+import { GeckoModuleIml, MapToResolvedValueInjectOptions, Provider } from './interfaces';
 import { When } from "./when";
 import { WhenAnyAncestor } from "./when-any-ancestor";
 import { WhenAnyAncestorIs } from "./when-any-ancestor-is";
@@ -107,27 +107,27 @@ export declare class ClassProvider<T = unknown> {
     provide: ServiceIdentifier<T>;
     useClass: Newable<T>;
     scope?: BindingScope;
-    providers?: Provider[];
+    metadata?: Partial<GeckoModuleIml>;
     when?: WhenType;
-    constructor(provide: ServiceIdentifier<T>, useClass: Newable<T>, scope?: BindingScope, providers?: Provider[], when?: WhenType);
+    constructor(provide: ServiceIdentifier<T>, useClass: Newable<T>, scope?: BindingScope, metadata?: Partial<GeckoModuleIml>, when?: WhenType);
     /**
      * ClassProvider
      * @param provide
      * @param newable
      * @param scope
-     * @param providers
+     * @param metadata
      * @param when
      */
-    static create<T>(provide: ServiceIdentifier<T>, newable: Newable<T>, scope?: BindingScope, providers?: Provider[], when?: WhenType): ClassProvider<T>;
+    static create<T>(provide: ServiceIdentifier<T>, newable: Newable<T>, scope?: BindingScope, metadata?: Partial<GeckoModuleIml>, when?: WhenType): ClassProvider<T>;
     /**
      * createForWhen
      * @param provide
      * @param newable
      * @param when
      * @param scope
-     * @param providers
+     * @param metadata
      */
-    static createForWhen<T>(provide: ServiceIdentifier<T>, newable: Newable<T>, when: WhenType, scope?: BindingScope, providers?: Provider[]): ClassProvider<T>;
+    static createForWhen<T>(provide: ServiceIdentifier<T>, newable: Newable<T>, when: WhenType, scope?: BindingScope, metadata?: Partial<GeckoModuleIml>): ClassProvider<T>;
 }
 export declare class ExistingProvider<T = unknown> {
     provide: ServiceIdentifier<T>;

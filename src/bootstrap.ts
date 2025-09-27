@@ -261,14 +261,21 @@ export class Bootstrap {
 
     allDecorates.forEach(decorator => {
       const {providers, imports, exports} = decorator.metadata || {};
-      if (providers) object.providers.push(...providers, ...providers.flatMap(it => ((it as ClassProvider)?.providers ?? [])));
+      if (providers) {
+        providers.forEach(provider => {
+          object.providers.push(...providers)
+          object.providers.push(...(provider as ClassProvider)?.metadata?.providers ?? [])
+          object.imports.push(...(provider as ClassProvider)?.metadata?.imports ?? [])
+          object.exports.push(...(provider as ClassProvider)?.metadata?.exports ?? [])
+        })
+      };
       if (imports) object.imports.push(...imports);
       if (exports) object.exports.push(...exports);
     });
 
     // 提供
     for (const provider of Array.from(new Set(object.providers))) {
-       Bootstrap.useProvider(container, provider);
+      Bootstrap.useProvider(container, provider);
     }
 
     // 导入

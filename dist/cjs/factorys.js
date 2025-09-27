@@ -46,18 +46,18 @@ var ConstructorProvider = (function () {
 }());
 exports.ConstructorProvider = ConstructorProvider;
 var ClassProvider = (function () {
-    function ClassProvider(provide, useClass, scope, providers, when) {
+    function ClassProvider(provide, useClass, scope, metadata, when) {
         this.provide = provide;
         this.useClass = useClass;
         this.scope = scope;
-        this.providers = providers;
+        this.metadata = metadata;
         this.when = when;
     }
-    ClassProvider.create = function (provide, newable, scope, providers, when) {
-        return new ClassProvider(provide, newable, scope, providers, when);
+    ClassProvider.create = function (provide, newable, scope, metadata, when) {
+        return new ClassProvider(provide, newable, scope, metadata, when);
     };
-    ClassProvider.createForWhen = function (provide, newable, when, scope, providers) {
-        return new ClassProvider(provide, newable, scope, providers, when);
+    ClassProvider.createForWhen = function (provide, newable, when, scope, metadata) {
+        return new ClassProvider(provide, newable, scope, metadata, when);
     };
     return ClassProvider;
 }());

@@ -1,12 +1,3 @@
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
-};
 define(["require", "exports", "@geckoai/class-mirror", "inversify", "./interfaces", "./constants", "./when", "./when-any-ancestor", "./when-any-ancestor-is", "./when-any-ancestor-named", "./when-any-ancestor-tagged", "./when-parent-is", "./when-parent-named", "./when-parent-tagged", "./when-parent", "./when-no-parent", "./when-no-parent-is", "./when-no-parent-named", "./when-no-parent-tagged", "./when-no-ancestor", "./when-no-ancestor-is", "./when-no-ancestor-named", "./when-no-ancestor-tagged", "./when-named", "./when-tagged"], function (require, exports, class_mirror_1, inversify_1, interfaces_1, constants_1, when_1, when_any_ancestor_1, when_any_ancestor_is_1, when_any_ancestor_named_1, when_any_ancestor_tagged_1, when_parent_is_1, when_parent_named_1, when_parent_tagged_1, when_parent_1, when_no_parent_1, when_no_parent_is_1, when_no_parent_named_1, when_no_parent_tagged_1, when_no_ancestor_1, when_no_ancestor_is_1, when_no_ancestor_named_1, when_no_ancestor_tagged_1, when_named_1, when_tagged_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -145,14 +136,23 @@ define(["require", "exports", "@geckoai/class-mirror", "inversify", "./interface
                 imports: []
             };
             allDecorates.forEach(function (decorator) {
-                var _a, _b, _c;
-                var _d = decorator.metadata || {}, providers = _d.providers, imports = _d.imports, exports = _d.exports;
-                if (providers)
-                    (_a = object.providers).push.apply(_a, __spreadArray(__spreadArray([], providers, false), providers.flatMap(function (it) { var _a; return ((_a = it === null || it === void 0 ? void 0 : it.providers) !== null && _a !== void 0 ? _a : []); }), false));
+                var _a, _b;
+                var _c = decorator.metadata || {}, providers = _c.providers, imports = _c.imports, exports = _c.exports;
+                if (providers) {
+                    providers.forEach(function (provider) {
+                        var _a, _b, _c, _d;
+                        var _e, _f, _g, _h, _j, _k;
+                        (_a = object.providers).push.apply(_a, providers);
+                        (_b = object.providers).push.apply(_b, (_f = (_e = provider === null || provider === void 0 ? void 0 : provider.metadata) === null || _e === void 0 ? void 0 : _e.providers) !== null && _f !== void 0 ? _f : []);
+                        (_c = object.imports).push.apply(_c, (_h = (_g = provider === null || provider === void 0 ? void 0 : provider.metadata) === null || _g === void 0 ? void 0 : _g.imports) !== null && _h !== void 0 ? _h : []);
+                        (_d = object.exports).push.apply(_d, (_k = (_j = provider === null || provider === void 0 ? void 0 : provider.metadata) === null || _j === void 0 ? void 0 : _j.exports) !== null && _k !== void 0 ? _k : []);
+                    });
+                }
+                ;
                 if (imports)
-                    (_b = object.imports).push.apply(_b, imports);
+                    (_a = object.imports).push.apply(_a, imports);
                 if (exports)
-                    (_c = object.exports).push.apply(_c, exports);
+                    (_b = object.exports).push.apply(_b, exports);
             });
             for (var _i = 0, _a = Array.from(new Set(object.providers)); _i < _a.length; _i++) {
                 var provider = _a[_i];
