@@ -23,7 +23,7 @@
  */
 
 import {BindingScope, DynamicValueBuilder, Newable, ResolutionContext, ServiceIdentifier} from 'inversify';
-import {MapToResolvedValueInjectOptions, Provider} from './interfaces';
+import {GeckoModuleIml, MapToResolvedValueInjectOptions, Provider} from './interfaces';
 import {When} from "./when";
 import {WhenAnyAncestor} from "./when-any-ancestor";
 import {WhenAnyAncestorIs} from "./when-any-ancestor-is";
@@ -155,7 +155,7 @@ export class ClassProvider<T = unknown> {
     public provide: ServiceIdentifier<T>,
     public useClass: Newable<T>,
     public scope?: BindingScope,
-    public providers?: Provider[],
+    public metadata?: Partial<GeckoModuleIml>,
     public when?: WhenType
   ) {
   }
@@ -165,11 +165,11 @@ export class ClassProvider<T = unknown> {
    * @param provide
    * @param newable
    * @param scope
-   * @param providers
+   * @param metadata
    * @param when
    */
-  public static create<T>(provide: ServiceIdentifier<T>, newable: Newable<T>, scope?: BindingScope, providers?: Provider[], when?: WhenType) {
-    return new ClassProvider<T>(provide, newable, scope, providers, when);
+  public static create<T>(provide: ServiceIdentifier<T>, newable: Newable<T>, scope?: BindingScope, metadata?: Partial<GeckoModuleIml>, when?: WhenType) {
+    return new ClassProvider<T>(provide, newable, scope, metadata, when);
   }
 
   /**
@@ -178,10 +178,10 @@ export class ClassProvider<T = unknown> {
    * @param newable
    * @param when
    * @param scope
-   * @param providers
+   * @param metadata
    */
-  public static createForWhen<T>(provide: ServiceIdentifier<T>, newable: Newable<T>, when: WhenType, scope?: BindingScope, providers?: Provider[]) {
-    return new ClassProvider<T>(provide, newable, scope, providers, when);
+  public static createForWhen<T>(provide: ServiceIdentifier<T>, newable: Newable<T>, when: WhenType, scope?: BindingScope, metadata?: Partial<GeckoModuleIml>) {
+    return new ClassProvider<T>(provide, newable, scope, metadata, when);
   }
 }
 
