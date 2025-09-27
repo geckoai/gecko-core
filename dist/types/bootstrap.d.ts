@@ -64,6 +64,8 @@ export declare class Bootstrap {
      * @param parent
      */
     static runModuleWithParent<T extends object>(app: Newable<T>, parent: Container): LoadedModule<T>;
+    static useProvider(container: Container, provider: Provider): void;
     private static useScope;
+    private static useWhen;
     private static module;
 }

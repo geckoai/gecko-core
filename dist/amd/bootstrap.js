@@ -7,7 +7,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
-define(["require", "exports", "@geckoai/class-mirror", "inversify", "./interfaces", "./constants"], function (require, exports, class_mirror_1, inversify_1, interfaces_1, constants_1) {
+define(["require", "exports", "@geckoai/class-mirror", "inversify", "./interfaces", "./constants", "./when", "./when-any-ancestor", "./when-any-ancestor-is", "./when-any-ancestor-named", "./when-any-ancestor-tagged", "./when-parent-is", "./when-parent-named", "./when-parent-tagged", "./when-parent", "./when-no-parent", "./when-no-parent-is", "./when-no-parent-named", "./when-no-parent-tagged", "./when-no-ancestor", "./when-no-ancestor-is", "./when-no-ancestor-named", "./when-no-ancestor-tagged", "./when-named", "./when-tagged"], function (require, exports, class_mirror_1, inversify_1, interfaces_1, constants_1, when_1, when_any_ancestor_1, when_any_ancestor_is_1, when_any_ancestor_named_1, when_any_ancestor_tagged_1, when_parent_is_1, when_parent_named_1, when_parent_tagged_1, when_parent_1, when_no_parent_1, when_no_parent_is_1, when_no_parent_named_1, when_no_parent_tagged_1, when_no_ancestor_1, when_no_ancestor_is_1, when_no_ancestor_named_1, when_no_ancestor_tagged_1, when_named_1, when_tagged_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.Bootstrap = void 0;
@@ -21,35 +21,7 @@ define(["require", "exports", "@geckoai/class-mirror", "inversify", "./interface
             var container = new inversify_1.Container();
             for (var _i = 0, providers_1 = providers; _i < providers_1.length; _i++) {
                 var provider = providers_1[_i];
-                if (typeof provider === 'function') {
-                    container.bind(provider).to(provider);
-                    continue;
-                }
-                var _a = provider, scope = _a.scope, provide = _a.provide, useConstantValue = _a.useConstantValue, useDynamicValue = _a.useDynamicValue, useFactory = _a.useFactory, useClass = _a.useClass, useExisting = _a.useExisting, useResolvedValueFactory = _a.useResolvedValueFactory, deps = _a.deps;
-                if (useConstantValue) {
-                    container.bind(provide).toConstantValue(useConstantValue);
-                    continue;
-                }
-                if (useDynamicValue) {
-                    Bootstrap.useScope(container.bind(provide).toDynamicValue(useDynamicValue));
-                }
-                if (useClass && typeof useClass === 'function') {
-                    Bootstrap.useScope(container.bind(provide).to(useClass), scope);
-                    continue;
-                }
-                if (useFactory) {
-                    container.bind(provide).toFactory(useFactory);
-                    continue;
-                }
-                if (useExisting) {
-                    container.bind(provide).toService(useExisting);
-                    continue;
-                }
-                if (useResolvedValueFactory) {
-                    Bootstrap.useScope(container.bind(provide).toResolvedValue(useResolvedValueFactory, deps));
-                    continue;
-                }
-                Bootstrap.useScope(container.bind(provide).to(provide));
+                Bootstrap.useProvider(container, provider);
             }
             return Bootstrap.module(app, container).container.get(app);
         };
@@ -57,35 +29,7 @@ define(["require", "exports", "@geckoai/class-mirror", "inversify", "./interface
             var container = new inversify_1.Container();
             for (var _i = 0, providers_2 = providers; _i < providers_2.length; _i++) {
                 var provider = providers_2[_i];
-                if (typeof provider === 'function') {
-                    container.bind(provider).to(provider);
-                    continue;
-                }
-                var _a = provider, scope = _a.scope, provide = _a.provide, useConstantValue = _a.useConstantValue, useDynamicValue = _a.useDynamicValue, useFactory = _a.useFactory, useClass = _a.useClass, useExisting = _a.useExisting, useResolvedValueFactory = _a.useResolvedValueFactory, deps = _a.deps;
-                if (useConstantValue) {
-                    container.bind(provide).toConstantValue(useConstantValue);
-                    continue;
-                }
-                if (useDynamicValue) {
-                    Bootstrap.useScope(container.bind(provide).toDynamicValue(useDynamicValue));
-                }
-                if (useClass && typeof useClass === 'function') {
-                    Bootstrap.useScope(container.bind(provide).to(useClass), scope);
-                    continue;
-                }
-                if (useFactory) {
-                    container.bind(provide).toFactory(useFactory);
-                    continue;
-                }
-                if (useExisting) {
-                    container.bind(provide).toService(useExisting);
-                    continue;
-                }
-                if (useResolvedValueFactory) {
-                    Bootstrap.useScope(container.bind(provide).toResolvedValue(useResolvedValueFactory, deps));
-                    continue;
-                }
-                Bootstrap.useScope(container.bind(provide).to(provide));
+                Bootstrap.useProvider(container, provider);
             }
             return Bootstrap.module(app, container);
         };
@@ -95,16 +39,92 @@ define(["require", "exports", "@geckoai/class-mirror", "inversify", "./interface
         Bootstrap.runModuleWithParent = function (app, parent) {
             return Bootstrap.module(app, parent);
         };
+        Bootstrap.useProvider = function (container, provider) {
+            if (typeof provider === 'function') {
+                container.bind(provider).to(provider);
+                return;
+            }
+            var _a = provider, scope = _a.scope, provide = _a.provide, useConstantValue = _a.useConstantValue, useDynamicValue = _a.useDynamicValue, useFactory = _a.useFactory, useClass = _a.useClass, useExisting = _a.useExisting, useResolvedValueFactory = _a.useResolvedValueFactory, deps = _a.deps, when = _a.when;
+            if (useConstantValue) {
+                Bootstrap.useWhen(container.bind(provide).toConstantValue(useConstantValue), when);
+                return;
+            }
+            if (useDynamicValue) {
+                Bootstrap.useWhen(Bootstrap.useScope(container.bind(provide).toDynamicValue(useDynamicValue)), when);
+                return;
+            }
+            if (useClass && typeof useClass === 'function') {
+                Bootstrap.useWhen(Bootstrap.useScope(container.bind(provide).to(useClass), scope), when);
+                return;
+            }
+            if (useFactory) {
+                Bootstrap.useWhen(container.bind(provide).toFactory(useFactory), when);
+                return;
+            }
+            if (useExisting) {
+                container.bind(provide).toService(useExisting);
+                return;
+            }
+            if (useResolvedValueFactory) {
+                Bootstrap.useWhen(Bootstrap.useScope(container.bind(provide).toResolvedValue(useResolvedValueFactory, deps)), when);
+                return;
+            }
+            Bootstrap.useWhen(Bootstrap.useScope(container.bind(provide).to(provide)), when);
+        };
         Bootstrap.useScope = function (bind, scope) {
             switch (scope) {
                 case 'Transient':
-                    bind.inTransientScope();
-                    break;
+                    return bind.inTransientScope();
                 case 'Request':
-                    bind.inRequestScope();
-                    break;
+                    return bind.inRequestScope();
                 default:
-                    bind.inSingletonScope();
+                    return bind.inSingletonScope();
+            }
+        };
+        Bootstrap.useWhen = function (bind, when) {
+            if (!when)
+                return bind;
+            switch (when.type) {
+                case when_1.When:
+                    return bind.when(when.constraint);
+                case when_named_1.WhenNamed:
+                    return bind.whenNamed(when.name);
+                case when_tagged_1.WhenTagged:
+                    return bind.whenTagged(when.tag, when.tagValue);
+                case when_any_ancestor_1.WhenAnyAncestor:
+                    return bind.whenAnyAncestor(when.constraint);
+                case when_any_ancestor_is_1.WhenAnyAncestorIs:
+                    return bind.whenAnyAncestorIs(when.serviceIdentifier);
+                case when_any_ancestor_named_1.WhenAnyAncestorNamed:
+                    return bind.whenAnyAncestorNamed(when.name);
+                case when_any_ancestor_tagged_1.WhenAnyAncestorTagged:
+                    return bind.whenAnyAncestorTagged(when.tag, when.tagValue);
+                case when_no_ancestor_1.WhenNoAncestor:
+                    return bind.whenNoAncestor(when.constraint);
+                case when_no_ancestor_is_1.WhenNoAncestorIs:
+                    return bind.whenNoAncestorIs(when.serviceIdentifier);
+                case when_no_ancestor_named_1.WhenNoAncestorNamed:
+                    return bind.whenNoAncestorNamed(when.name);
+                case when_no_ancestor_tagged_1.WhenNoAncestorTagged:
+                    return bind.whenNoAncestorTagged(when.tag, when.tagValue);
+                case when_parent_1.WhenParent:
+                    return bind.whenParent(when.constraint);
+                case when_parent_is_1.WhenParentIs:
+                    return bind.whenParentIs(when.serviceIdentifier);
+                case when_parent_named_1.WhenParentNamed:
+                    return bind.whenParentNamed(when.name);
+                case when_parent_tagged_1.WhenParentTagged:
+                    return bind.whenParentTagged(when.tag, when.tagValue);
+                case when_no_parent_1.WhenNoParent:
+                    return bind.whenNoParentIs(when.constraint);
+                case when_no_parent_is_1.WhenNoParentIs:
+                    return bind.whenNoParentIs(when.serviceIdentifier);
+                case when_no_parent_named_1.WhenNoParentNamed:
+                    return bind.whenNoParentNamed(when.name);
+                case when_no_parent_tagged_1.WhenNoParentTagged:
+                    return bind.whenNoParentTagged(when.tag, when.tagValue);
+                default:
+                    return bind.whenDefault();
             }
         };
         Bootstrap.module = function (module, parent) {
@@ -136,35 +156,7 @@ define(["require", "exports", "@geckoai/class-mirror", "inversify", "./interface
             });
             for (var _i = 0, _a = Array.from(new Set(object.providers)); _i < _a.length; _i++) {
                 var provider = _a[_i];
-                if (typeof provider === 'function') {
-                    container.bind(provider).to(provider);
-                    continue;
-                }
-                var _b = provider, scope = _b.scope, provide = _b.provide, useConstantValue = _b.useConstantValue, useDynamicValue = _b.useDynamicValue, useFactory = _b.useFactory, useClass = _b.useClass, useExisting = _b.useExisting, useResolvedValueFactory = _b.useResolvedValueFactory, deps = _b.deps;
-                if (useConstantValue) {
-                    container.bind(provide).toConstantValue(useConstantValue);
-                    continue;
-                }
-                if (useDynamicValue) {
-                    Bootstrap.useScope(container.bind(provide).toDynamicValue(useDynamicValue));
-                }
-                if (useClass && typeof useClass === 'function') {
-                    Bootstrap.useScope(container.bind(provide).to(useClass), scope);
-                    continue;
-                }
-                if (useFactory) {
-                    container.bind(provide).toFactory(useFactory);
-                    continue;
-                }
-                if (useExisting) {
-                    container.bind(provide).toService(useExisting);
-                    continue;
-                }
-                if (useResolvedValueFactory) {
-                    Bootstrap.useScope(container.bind(provide).toResolvedValue(useResolvedValueFactory, deps));
-                    continue;
-                }
-                Bootstrap.useScope(container.bind(provide).to(provide));
+                Bootstrap.useProvider(container, provider);
             }
             var loadedModules = Array.from(new Set(object.imports)).map(function (imp) {
                 var _a;
@@ -177,15 +169,14 @@ define(["require", "exports", "@geckoai/class-mirror", "inversify", "./interface
                         if (!(parent === null || parent === void 0 ? void 0 : parent.isCurrentBound(it))) {
                             parent === null || parent === void 0 ? void 0 : parent.bind(it).toResolvedValue(function () { return result.container.get(it); });
                         }
+                        return;
                     }
-                    else {
-                        var provide_1 = it.provide;
-                        if (!(parent === null || parent === void 0 ? void 0 : parent.isCurrentBound(provide_1))) {
-                            parent === null || parent === void 0 ? void 0 : parent.bind(provide_1).toResolvedValue(function () { return result.container.get(provide_1); });
-                            result.container.onDeactivation(provide_1, function () {
-                                parent === null || parent === void 0 ? void 0 : parent.unbind(provide_1);
-                            });
-                        }
+                    var provide = it.provide;
+                    if (!(parent === null || parent === void 0 ? void 0 : parent.isCurrentBound(provide))) {
+                        parent === null || parent === void 0 ? void 0 : parent.bind(provide).toResolvedValue(function () { return result.container.get(provide); });
+                        result.container.onDeactivation(provide, function () {
+                            parent === null || parent === void 0 ? void 0 : parent.unbind(provide);
+                        });
                     }
                 });
                 return result;
