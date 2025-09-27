@@ -22,13 +22,55 @@
  * SOFTWARE.
  */
 
-import { BindingScope, DynamicValueBuilder, Newable, ResolutionContext, ServiceIdentifier } from 'inversify';
+import {BindingScope, DynamicValueBuilder, Newable, ResolutionContext, ServiceIdentifier} from 'inversify';
 import {MapToResolvedValueInjectOptions, Provider} from './interfaces';
+import {When} from "./when";
+import {WhenAnyAncestor} from "./when-any-ancestor";
+import {WhenAnyAncestorIs} from "./when-any-ancestor-is";
+import {WhenAnyAncestorNamed} from "./when-any-ancestor-named";
+import {WhenAnyAncestorTagged} from "./when-any-ancestor-tagged";
+import {WhenDefault} from "./when-default";
+import {WhenNamed} from "./when-named";
+import {WhenNoAncestor} from "./when-no-ancestor";
+import {WhenNoAncestorNamed} from "./when-no-ancestor-named";
+import {WhenNoAncestorTagged} from "./when-no-ancestor-tagged";
+import {WhenNoAncestorIs} from "./when-no-ancestor-is";
+import {WhenNoParent} from "./when-no-parent";
+import {WhenNoParentIs} from "./when-no-parent-is";
+import {WhenNoParentNamed} from "./when-no-parent-named";
+import {WhenNoParentTagged} from "./when-no-parent-tagged";
+import {WhenParent} from "./when-parent";
+import {WhenParentIs} from "./when-parent-is";
+import {WhenTagged} from "./when-tagged";
+import {WhenParentNamed} from "./when-parent-named";
+import {WhenParentTagged} from "./when-parent-tagged";
+
+export type WhenType = When
+  | WhenAnyAncestor
+  | WhenAnyAncestorIs
+  | WhenAnyAncestorNamed
+  | WhenAnyAncestorTagged
+  | WhenDefault
+  | WhenNamed
+  | WhenNoAncestor
+  | WhenNoAncestorIs
+  | WhenNoAncestorNamed
+  | WhenNoAncestorTagged
+  | WhenNoParent
+  | WhenNoParentIs
+  | WhenNoParentNamed
+  | WhenNoParentTagged
+  | WhenParent
+  | WhenParentIs
+  | WhenParentNamed
+  | WhenParentTagged
+  | WhenTagged;
 
 export class ConstantValueProvider<T = unknown> {
   public constructor(
     public provide: ServiceIdentifier<T>,
-    public useConstantValue: T
+    public useConstantValue: T,
+    public when?: WhenType
   ) {
   }
 
@@ -36,9 +78,10 @@ export class ConstantValueProvider<T = unknown> {
    * 直接绑定静态常量值到容器，该值不会被重新计算或改变。适用于配置项、全局常量等不变值
    * @param provide
    * @param value
+   * @param when
    */
-  public static create<T>(provide: ServiceIdentifier<T>, value: T): ConstantValueProvider<T> {
-    return new ConstantValueProvider<T>(provide, value);
+  public static create<T>(provide: ServiceIdentifier<T>, value: T, when?: WhenType): ConstantValueProvider<T> {
+    return new ConstantValueProvider<T>(provide, value, when);
   }
 }
 
@@ -46,7 +89,8 @@ export class DynamicValueProvider<T = unknown> {
   public constructor(
     public provide: ServiceIdentifier<T>,
     public useDynamicValue: DynamicValueBuilder<T>,
-    public scope?: BindingScope
+    public scope?: BindingScope,
+    public when?: WhenType
   ) {
   }
 
@@ -55,9 +99,21 @@ export class DynamicValueProvider<T = unknown> {
    * @param provide
    * @param builder
    * @param scope
+   * @param when
    */
-  public static create<T>(provide: ServiceIdentifier<T>, builder: DynamicValueBuilder<T>, scope?: BindingScope) {
+  public static create<T>(provide: ServiceIdentifier<T>, builder: DynamicValueBuilder<T>, scope?: BindingScope, when?: WhenType,) {
     return new DynamicValueProvider<T>(provide, builder, scope);
+  }
+
+  /**
+   * 类似于Factory但更轻量，通过函数延迟生成值，每次请求依赖时都会重新执行函数。适用于需要每次获取新值的场景，如配置动态参数
+   * @param provide
+   * @param builder
+   * @param when
+   * @param scope
+   */
+  public static createForWhen<T>(provide: ServiceIdentifier<T>, builder: DynamicValueBuilder<T>, when: WhenType, scope?: BindingScope) {
+    return new DynamicValueProvider<T>(provide, builder, scope, when);
   }
 }
 
@@ -65,12 +121,31 @@ export class ConstructorProvider<T = unknown> {
   public constructor(
     public provide: Newable<T>,
     public scope?: BindingScope,
-    public providers?: Provider[]
+    public providers?: Provider[],
+    public when?: WhenType
   ) {
   }
 
-  public static create<T>(provide: Newable<T>, scope?: BindingScope, providers?: Provider[]) {
+  /**
+   * ConstructorProvider
+   * @param provide
+   * @param scope
+   * @param providers
+   * @param when
+   */
+  public static create<T>(provide: Newable<T>, scope?: BindingScope, providers?: Provider[], when?: WhenType) {
     return new ConstructorProvider<T>(provide, scope, providers);
+  }
+
+  /**
+   * ConstructorProvider
+   * @param provide
+   * @param scope
+   * @param when
+   * @param providers
+   */
+  public static createForWhen<T>(provide: Newable<T>, when: WhenType, scope?: BindingScope, providers?: Provider[]) {
+    return new ConstructorProvider<T>(provide, scope, providers, when);
   }
 }
 
@@ -81,11 +156,32 @@ export class ClassProvider<T = unknown> {
     public useClass: Newable<T>,
     public scope?: BindingScope,
     public providers?: Provider[],
+    public when?: WhenType
   ) {
   }
 
-  public static create<T>(provide: ServiceIdentifier<T>, newable: Newable<T>, scope?: BindingScope, providers?: Provider[]) {
-    return new ClassProvider<T>(provide, newable, scope, providers);
+  /**
+   * ClassProvider
+   * @param provide
+   * @param newable
+   * @param scope
+   * @param providers
+   * @param when
+   */
+  public static create<T>(provide: ServiceIdentifier<T>, newable: Newable<T>, scope?: BindingScope, providers?: Provider[], when?: WhenType) {
+    return new ClassProvider<T>(provide, newable, scope, providers, when);
+  }
+
+  /**
+   * createForWhen
+   * @param provide
+   * @param newable
+   * @param when
+   * @param scope
+   * @param providers
+   */
+  public static createForWhen<T>(provide: ServiceIdentifier<T>, newable: Newable<T>, when: WhenType, scope?: BindingScope, providers?: Provider[]) {
+    return new ClassProvider<T>(provide, newable, scope, providers, when);
   }
 }
 
@@ -100,6 +196,7 @@ export class ExistingProvider<T = unknown> {
    * 将服务绑定到另一个已存在的服务标识符，实现别名功能。本质上是对已有绑定的引用，不会创建新实例
    * @param provide
    * @param useExisting
+   * @param when
    */
   public static create<T>(provide: ServiceIdentifier<T>, useExisting: ServiceIdentifier<T>) {
     return new ExistingProvider<T>(provide, useExisting);
@@ -109,19 +206,23 @@ export class ExistingProvider<T = unknown> {
 export class FactoryProvider<T = unknown> {
   public constructor(
     public provide: ServiceIdentifier<T>,
-    public useFactory: (context?: ResolutionContext) => T
-  ) { }
+    public useFactory: (context?: ResolutionContext) => T,
+    public when?: WhenType
+  ) {
+  }
 
   /**
    * 允许通过工厂函数动态创建实例，每次请求依赖时都会调用工厂函数生成新实例。适合需要复杂初始化逻辑或运行时决定实例化方式的场景
    * @param provide
    * @param useFactory
+   * @param when
    */
   public static create<T>(
     provide: ServiceIdentifier<T>,
-    useFactory: (context?: ResolutionContext) => T
+    useFactory: (context?: ResolutionContext) => T,
+    when?: WhenType
   ) {
-    return new FactoryProvider<T>(provide, useFactory);
+    return new FactoryProvider<T>(provide, useFactory, when);
   }
 }
 
@@ -130,7 +231,8 @@ export class ResolvedValueProvider<T = unknown, A = unknown> {
     public provide: ServiceIdentifier<T>,
     public useResolvedValueFactory: A extends [] ? <TArgs extends A>(...args: TArgs) => T : () => T,
     public deps: A extends [] ? MapToResolvedValueInjectOptions<A> : null,
-    public scope?: BindingScope
+    public scope?: BindingScope,
+    public when?: WhenType
   ) {
   }
 
@@ -139,7 +241,7 @@ export class ResolvedValueProvider<T = unknown, A = unknown> {
    * @param options
    */
   public static create<T, A extends []>(options: ResolvedValueProvider<T, A>) {
-    return new ResolvedValueProvider<T, A>(options.provide, options.useResolvedValueFactory, options.deps, options.scope);
+    return new ResolvedValueProvider<T, A>(options.provide, options.useResolvedValueFactory, options.deps, options.scope, options.when);
   }
 }
 

@@ -21,30 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import {BindingConstraints} from "inversify";
 
-export * from './decorators';
-export * from './constants'
-export * from './bootstrap'
-export * from './factorys'
-export * from './interfaces'
+/**
+ * 当满足某个条件时进行绑定
+ */
+export class When {
+  constructor(public readonly constraint: (metadata: BindingConstraints) => boolean) {}
 
-export * from './when';
-export * from './when-any-ancestor';
-export * from './when-any-ancestor-is';
-export * from './when-any-ancestor-named';
-export * from './when-any-ancestor-tagged';
-export * from './when-default';
-export * from './when-named';
-export * from './when-no-ancestor';
-export * from './when-no-ancestor-is';
-export * from './when-no-ancestor-named';
-export * from './when-no-ancestor-tagged';
-export * from './when-no-parent';
-export * from './when-no-parent-is';
-export * from './when-no-parent-named';
-export * from './when-no-parent-tagged';
-export * from './when-parent';
-export * from './when-parent-named';
-export * from './when-parent-tagged';
-export * from './when-parent-is';
-export * from './when-tagged';
+  public get type() {
+    return When;
+  }
+
+
+  public static for(constraint: (metadata: BindingConstraints) => boolean): When {
+    return new When(constraint);
+  }
+}

@@ -22,29 +22,15 @@
  * SOFTWARE.
  */
 
-export * from './decorators';
-export * from './constants'
-export * from './bootstrap'
-export * from './factorys'
-export * from './interfaces'
+/**
+ * 没有特定条件时，使用默认的绑定
+ */
+export class WhenDefault {
+  public get type() {
+    return WhenDefault;
+  }
 
-export * from './when';
-export * from './when-any-ancestor';
-export * from './when-any-ancestor-is';
-export * from './when-any-ancestor-named';
-export * from './when-any-ancestor-tagged';
-export * from './when-default';
-export * from './when-named';
-export * from './when-no-ancestor';
-export * from './when-no-ancestor-is';
-export * from './when-no-ancestor-named';
-export * from './when-no-ancestor-tagged';
-export * from './when-no-parent';
-export * from './when-no-parent-is';
-export * from './when-no-parent-named';
-export * from './when-no-parent-tagged';
-export * from './when-parent';
-export * from './when-parent-named';
-export * from './when-parent-tagged';
-export * from './when-parent-is';
-export * from './when-tagged';
+  public static for(): WhenDefault {
+    return new WhenDefault();
+  }
+}

@@ -1,47 +1,60 @@
 var ConstantValueProvider = (function () {
-    function ConstantValueProvider(provide, useConstantValue) {
+    function ConstantValueProvider(provide, useConstantValue, when) {
         this.provide = provide;
         this.useConstantValue = useConstantValue;
+        this.when = when;
     }
-    ConstantValueProvider.create = function (provide, value) {
-        return new ConstantValueProvider(provide, value);
+    ConstantValueProvider.create = function (provide, value, when) {
+        return new ConstantValueProvider(provide, value, when);
     };
     return ConstantValueProvider;
 }());
 export { ConstantValueProvider };
 var DynamicValueProvider = (function () {
-    function DynamicValueProvider(provide, useDynamicValue, scope) {
+    function DynamicValueProvider(provide, useDynamicValue, scope, when) {
         this.provide = provide;
         this.useDynamicValue = useDynamicValue;
         this.scope = scope;
+        this.when = when;
     }
-    DynamicValueProvider.create = function (provide, builder, scope) {
+    DynamicValueProvider.create = function (provide, builder, scope, when) {
         return new DynamicValueProvider(provide, builder, scope);
+    };
+    DynamicValueProvider.createForWhen = function (provide, builder, when, scope) {
+        return new DynamicValueProvider(provide, builder, scope, when);
     };
     return DynamicValueProvider;
 }());
 export { DynamicValueProvider };
 var ConstructorProvider = (function () {
-    function ConstructorProvider(provide, scope, providers) {
+    function ConstructorProvider(provide, scope, providers, when) {
         this.provide = provide;
         this.scope = scope;
         this.providers = providers;
+        this.when = when;
     }
-    ConstructorProvider.create = function (provide, scope, providers) {
+    ConstructorProvider.create = function (provide, scope, providers, when) {
         return new ConstructorProvider(provide, scope, providers);
+    };
+    ConstructorProvider.createForWhen = function (provide, when, scope, providers) {
+        return new ConstructorProvider(provide, scope, providers, when);
     };
     return ConstructorProvider;
 }());
 export { ConstructorProvider };
 var ClassProvider = (function () {
-    function ClassProvider(provide, useClass, scope, providers) {
+    function ClassProvider(provide, useClass, scope, providers, when) {
         this.provide = provide;
         this.useClass = useClass;
         this.scope = scope;
         this.providers = providers;
+        this.when = when;
     }
-    ClassProvider.create = function (provide, newable, scope, providers) {
-        return new ClassProvider(provide, newable, scope, providers);
+    ClassProvider.create = function (provide, newable, scope, providers, when) {
+        return new ClassProvider(provide, newable, scope, providers, when);
+    };
+    ClassProvider.createForWhen = function (provide, newable, when, scope, providers) {
+        return new ClassProvider(provide, newable, scope, providers, when);
     };
     return ClassProvider;
 }());
@@ -58,25 +71,27 @@ var ExistingProvider = (function () {
 }());
 export { ExistingProvider };
 var FactoryProvider = (function () {
-    function FactoryProvider(provide, useFactory) {
+    function FactoryProvider(provide, useFactory, when) {
         this.provide = provide;
         this.useFactory = useFactory;
+        this.when = when;
     }
-    FactoryProvider.create = function (provide, useFactory) {
-        return new FactoryProvider(provide, useFactory);
+    FactoryProvider.create = function (provide, useFactory, when) {
+        return new FactoryProvider(provide, useFactory, when);
     };
     return FactoryProvider;
 }());
 export { FactoryProvider };
 var ResolvedValueProvider = (function () {
-    function ResolvedValueProvider(provide, useResolvedValueFactory, deps, scope) {
+    function ResolvedValueProvider(provide, useResolvedValueFactory, deps, scope, when) {
         this.provide = provide;
         this.useResolvedValueFactory = useResolvedValueFactory;
         this.deps = deps;
         this.scope = scope;
+        this.when = when;
     }
     ResolvedValueProvider.create = function (options) {
-        return new ResolvedValueProvider(options.provide, options.useResolvedValueFactory, options.deps, options.scope);
+        return new ResolvedValueProvider(options.provide, options.useResolvedValueFactory, options.deps, options.scope, options.when);
     };
     return ResolvedValueProvider;
 }());

@@ -32,9 +32,33 @@ import {
   DynamicValueProvider,
   ExistingProvider,
   FactoryProvider,
-  ResolvedValueProvider
+  ResolvedValueProvider,
+  WhenType
 } from './factorys';
 import {Constants} from './constants';
+import {When} from "./when";
+import {WhenAnyAncestor} from "./when-any-ancestor";
+import {
+  BindOnFluentSyntax,
+  BindWhenOnFluentSyntax
+} from "@inversifyjs/container/lib/cjs/binding/models/BindingFluentSyntax";
+import {WhenAnyAncestorIs} from "./when-any-ancestor-is";
+import {WhenAnyAncestorNamed} from "./when-any-ancestor-named";
+import {WhenAnyAncestorTagged} from "./when-any-ancestor-tagged";
+import {WhenParentIs} from "./when-parent-is";
+import {WhenParentNamed} from "./when-parent-named";
+import {WhenParentTagged} from "./when-parent-tagged";
+import {WhenParent} from "./when-parent";
+import {WhenNoParent} from "./when-no-parent";
+import {WhenNoParentIs} from "./when-no-parent-is";
+import {WhenNoParentNamed} from "./when-no-parent-named";
+import {WhenNoParentTagged} from "./when-no-parent-tagged";
+import {WhenNoAncestor} from "./when-no-ancestor";
+import {WhenNoAncestorIs} from "./when-no-ancestor-is";
+import {WhenNoAncestorNamed} from "./when-no-ancestor-named";
+import {WhenNoAncestorTagged} from "./when-no-ancestor-tagged";
+import {WhenNamed} from "./when-named";
+import {WhenTagged} from "./when-tagged";
 
 export interface LoadedModule<T = unknown> {
   module: Newable<T>;
@@ -65,52 +89,7 @@ export class Bootstrap {
   public static runWithProvide<T extends object>(app: Newable<T>, providers: Provider[]): T {
     const container = new Container();
     for (const provider of providers) {
-      if (typeof provider === 'function') {
-        container.bind(provider).to(provider);
-        continue;
-      }
-
-      const {
-        scope,
-        provide,
-        useConstantValue,
-        useDynamicValue,
-        useFactory,
-        useClass,
-        useExisting,
-        useResolvedValueFactory,
-        deps
-      } = provider as (ConstantValueProvider & DynamicValueProvider & ClassProvider & FactoryProvider & ExistingProvider & ResolvedValueProvider & ConstructorProvider);
-
-      if (useConstantValue) {
-        container.bind(provide).toConstantValue(useConstantValue);
-        continue;
-      }
-
-      if (useDynamicValue) {
-        Bootstrap.useScope(container.bind(provide).toDynamicValue(useDynamicValue));
-      }
-
-      if (useClass && typeof useClass === 'function') {
-        Bootstrap.useScope(container.bind(provide).to(useClass), scope);
-        continue;
-      }
-
-      if (useFactory) {
-        container.bind<Factory<unknown, any>>(provide).toFactory(useFactory as any);
-        continue;
-      }
-
-      if (useExisting) {
-        container.bind(provide).toService(useExisting);
-        continue;
-      }
-
-      if (useResolvedValueFactory) {
-        Bootstrap.useScope(container.bind(provide).toResolvedValue(useResolvedValueFactory, deps as any));
-        continue;
-      }
-      Bootstrap.useScope(container.bind(provide).to(provide));
+      Bootstrap.useProvider(container, provider);
     }
     return Bootstrap.module(app, container).container.get<T>(app);
   }
@@ -123,52 +102,7 @@ export class Bootstrap {
   public static runModuleWithProvide<T extends object>(app: Newable<T>, providers: Provider[]): LoadedModule<T> {
     const container = new Container();
     for (const provider of providers) {
-      if (typeof provider === 'function') {
-        container.bind(provider).to(provider);
-        continue;
-      }
-
-      const {
-        scope,
-        provide,
-        useConstantValue,
-        useDynamicValue,
-        useFactory,
-        useClass,
-        useExisting,
-        useResolvedValueFactory,
-        deps
-      } = provider as (ConstantValueProvider & DynamicValueProvider & ClassProvider & FactoryProvider & ExistingProvider & ResolvedValueProvider & ConstructorProvider);
-
-      if (useConstantValue) {
-        container.bind(provide).toConstantValue(useConstantValue);
-        continue;
-      }
-
-      if (useDynamicValue) {
-        Bootstrap.useScope(container.bind(provide).toDynamicValue(useDynamicValue));
-      }
-
-      if (useClass && typeof useClass === 'function') {
-        Bootstrap.useScope(container.bind(provide).to(useClass), scope);
-        continue;
-      }
-
-      if (useFactory) {
-        container.bind<Factory<unknown, any>>(provide).toFactory(useFactory as any);
-        continue;
-      }
-
-      if (useExisting) {
-        container.bind(provide).toService(useExisting);
-        continue;
-      }
-
-      if (useResolvedValueFactory) {
-        Bootstrap.useScope(container.bind(provide).toResolvedValue(useResolvedValueFactory, deps as any));
-        continue;
-      }
-      Bootstrap.useScope(container.bind(provide).to(provide));
+      Bootstrap.useProvider(container, provider);
     }
     return Bootstrap.module(app, container)
   }
@@ -192,16 +126,112 @@ export class Bootstrap {
     return Bootstrap.module(app, parent)
   }
 
-  private static useScope<T>(bind: BindInWhenOnFluentSyntax<T>, scope?: BindingScope): void {
+  public static useProvider(container: Container, provider: Provider) {
+    if (typeof provider === 'function') {
+      container.bind(provider).to(provider);
+      return;
+    }
+
+    const {
+      scope,
+      provide,
+      useConstantValue,
+      useDynamicValue,
+      useFactory,
+      useClass,
+      useExisting,
+      useResolvedValueFactory,
+      deps,
+      when
+    } = provider as (ConstantValueProvider & DynamicValueProvider & ClassProvider & FactoryProvider & ExistingProvider & ResolvedValueProvider & ConstructorProvider);
+
+    if (useConstantValue) {
+      Bootstrap.useWhen(container.bind(provide).toConstantValue(useConstantValue), when);
+      return;
+    }
+
+    if (useDynamicValue) {
+      Bootstrap.useWhen(Bootstrap.useScope(container.bind(provide).toDynamicValue(useDynamicValue)), when);
+      return;
+    }
+
+    if (useClass && typeof useClass === 'function') {
+      Bootstrap.useWhen(Bootstrap.useScope(container.bind(provide).to(useClass), scope), when);
+      return;
+    }
+
+    if (useFactory) {
+      Bootstrap.useWhen(container.bind<Factory<unknown, any>>(provide).toFactory(useFactory as any), when);
+      return;
+    }
+
+    if (useExisting) {
+      container.bind(provide).toService(useExisting);
+      return;
+    }
+
+    if (useResolvedValueFactory) {
+      Bootstrap.useWhen(Bootstrap.useScope(container.bind(provide).toResolvedValue(useResolvedValueFactory, deps as any)), when);
+      return;
+    }
+
+    Bootstrap.useWhen(Bootstrap.useScope(container.bind(provide).to(provide)), when);
+  }
+
+  private static useScope<T>(bind: BindInWhenOnFluentSyntax<T>, scope?: BindingScope): BindWhenOnFluentSyntax<T> {
     switch (scope) {
       case 'Transient':
-        bind.inTransientScope();
-        break;
+        return bind.inTransientScope();
       case 'Request':
-        bind.inRequestScope();
-        break;
+        return bind.inRequestScope();
       default:
-        bind.inSingletonScope();
+        return bind.inSingletonScope();
+    }
+  }
+
+  private static useWhen<T>(bind: BindWhenOnFluentSyntax<T>, when?: WhenType): BindOnFluentSyntax<T> {
+    if (!when) return bind;
+    switch (when.type) {
+      case When:
+        return bind.when((when as When).constraint);
+      case WhenNamed:
+        return bind.whenNamed((when as WhenNamed).name);
+      case WhenTagged:
+        return bind.whenTagged((when as WhenTagged).tag, (when as WhenTagged).tagValue);
+      case WhenAnyAncestor:
+        return bind.whenAnyAncestor((when as WhenAnyAncestor).constraint)
+      case WhenAnyAncestorIs:
+        return bind.whenAnyAncestorIs((when as WhenAnyAncestorIs).serviceIdentifier)
+      case WhenAnyAncestorNamed:
+        return bind.whenAnyAncestorNamed((when as WhenAnyAncestorNamed).name)
+      case WhenAnyAncestorTagged:
+        return bind.whenAnyAncestorTagged((when as WhenAnyAncestorTagged).tag, (when as WhenAnyAncestorTagged).tagValue)
+      case WhenNoAncestor:
+        return bind.whenNoAncestor((when as WhenAnyAncestor).constraint)
+      case WhenNoAncestorIs:
+        return bind.whenNoAncestorIs((when as WhenAnyAncestorIs).serviceIdentifier)
+      case WhenNoAncestorNamed:
+        return bind.whenNoAncestorNamed((when as WhenAnyAncestorNamed).name)
+      case WhenNoAncestorTagged:
+        return bind.whenNoAncestorTagged((when as WhenAnyAncestorTagged).tag, (when as WhenAnyAncestorTagged).tagValue)
+      case WhenParent:
+        return bind.whenParent((when as WhenAnyAncestor).constraint)
+      case WhenParentIs:
+        return bind.whenParentIs((when as WhenParentIs).serviceIdentifier)
+      case WhenParentNamed:
+        return bind.whenParentNamed((when as WhenParentNamed).name)
+      case WhenParentTagged:
+        return bind.whenParentTagged((when as WhenParentTagged).tag, (when as WhenParentTagged).tagValue)
+      case WhenNoParent:
+        return bind.whenNoParentIs((when as WhenAnyAncestor).constraint)
+      case WhenNoParentIs:
+        return bind.whenNoParentIs((when as WhenParentIs).serviceIdentifier)
+      case WhenNoParentNamed:
+        return bind.whenNoParentNamed((when as WhenParentNamed).name)
+      case WhenNoParentTagged:
+        return bind.whenNoParentTagged((when as WhenParentTagged).tag, (when as WhenParentTagged).tagValue)
+      default:
+        return bind.whenDefault()
     }
   }
 
@@ -238,53 +268,7 @@ export class Bootstrap {
 
     // 提供
     for (const provider of Array.from(new Set(object.providers))) {
-      if (typeof provider === 'function') {
-        container.bind(provider).to(provider);
-        continue;
-      }
-
-      const {
-        scope,
-        provide,
-        useConstantValue,
-        useDynamicValue,
-        useFactory,
-        useClass,
-        useExisting,
-        useResolvedValueFactory,
-        deps
-      } = provider as (ConstantValueProvider & DynamicValueProvider & ClassProvider & FactoryProvider & ExistingProvider & ResolvedValueProvider & ConstructorProvider);
-
-      if (useConstantValue) {
-        container.bind(provide).toConstantValue(useConstantValue);
-        continue;
-      }
-
-      if (useDynamicValue) {
-        Bootstrap.useScope(container.bind(provide).toDynamicValue(useDynamicValue));
-      }
-
-      if (useClass && typeof useClass === 'function') {
-        Bootstrap.useScope(container.bind(provide).to(useClass), scope);
-        continue;
-      }
-
-      if (useFactory) {
-        container.bind<Factory<unknown, any>>(provide).toFactory(useFactory as any);
-        continue;
-      }
-
-      if (useExisting) {
-        container.bind(provide).toService(useExisting);
-        continue;
-      }
-
-      if (useResolvedValueFactory) {
-        Bootstrap.useScope(container.bind(provide).toResolvedValue(useResolvedValueFactory, deps as any));
-        continue;
-      }
-
-      Bootstrap.useScope(container.bind(provide).to(provide));
+       Bootstrap.useProvider(container, provider);
     }
 
     // 导入
@@ -301,19 +285,20 @@ export class Bootstrap {
           if (!parent?.isCurrentBound(it)) {
             parent?.bind(it).toResolvedValue(() => result.container.get(it))
           }
-        } else {
-          const {
-            provide
-          } = it as (ConstantValueProvider & DynamicValueProvider & ClassProvider & FactoryProvider & ExistingProvider & ResolvedValueProvider & ConstructorProvider);
+          return;
+        }
 
-          // 父未绑定
-          if (!parent?.isCurrentBound(provide)) {
-            parent?.bind(provide).toResolvedValue(() => result.container.get(provide))
-            // 取消绑定
-            result.container.onDeactivation(provide, () => {
-              parent?.unbind(provide)
-            })
-          }
+        const {
+          provide
+        } = it as (ConstantValueProvider & DynamicValueProvider & ClassProvider & FactoryProvider & ExistingProvider & ResolvedValueProvider & ConstructorProvider);
+
+        // 父未绑定
+        if (!parent?.isCurrentBound(provide)) {
+          parent?.bind(provide).toResolvedValue(() => result.container.get(provide))
+          // 取消绑定
+          result.container.onDeactivation(provide, () => {
+            parent?.unbind(provide)
+          })
         }
       })
       return result;

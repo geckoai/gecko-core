@@ -21,30 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import {MetadataTag} from "inversify";
+import {MetadataName} from "inversify/lib/esm";
 
-export * from './decorators';
-export * from './constants'
-export * from './bootstrap'
-export * from './factorys'
-export * from './interfaces'
+/**
+ * 当绑定的服务带有特定名称时进行绑定
+ */
+export class WhenParentNamed {
+  constructor(public readonly name: MetadataName) {
+  }
 
-export * from './when';
-export * from './when-any-ancestor';
-export * from './when-any-ancestor-is';
-export * from './when-any-ancestor-named';
-export * from './when-any-ancestor-tagged';
-export * from './when-default';
-export * from './when-named';
-export * from './when-no-ancestor';
-export * from './when-no-ancestor-is';
-export * from './when-no-ancestor-named';
-export * from './when-no-ancestor-tagged';
-export * from './when-no-parent';
-export * from './when-no-parent-is';
-export * from './when-no-parent-named';
-export * from './when-no-parent-tagged';
-export * from './when-parent';
-export * from './when-parent-named';
-export * from './when-parent-tagged';
-export * from './when-parent-is';
-export * from './when-tagged';
+  public get type() {
+    return WhenParentNamed;
+  }
+
+  public static for(tag: MetadataTag): WhenParentNamed {
+    return new WhenParentNamed(tag);
+  }
+}
+    
