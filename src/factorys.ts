@@ -121,7 +121,7 @@ export class ConstructorProvider<T = unknown> {
   public constructor(
     public provide: Newable<T>,
     public scope?: BindingScope,
-    public providers?: Provider[],
+    public metadata?: Partial<GeckoModuleIml>,
     public when?: WhenType
   ) {
   }
@@ -130,11 +130,11 @@ export class ConstructorProvider<T = unknown> {
    * ConstructorProvider
    * @param provide
    * @param scope
-   * @param providers
+   * @param metadata
    * @param when
    */
-  public static create<T>(provide: Newable<T>, scope?: BindingScope, providers?: Provider[], when?: WhenType) {
-    return new ConstructorProvider<T>(provide, scope, providers);
+  public static create<T>(provide: Newable<T>, scope?: BindingScope, metadata?: Partial<GeckoModuleIml>, when?: WhenType) {
+    return new ConstructorProvider<T>(provide, scope, metadata);
   }
 
   /**
@@ -142,10 +142,10 @@ export class ConstructorProvider<T = unknown> {
    * @param provide
    * @param scope
    * @param when
-   * @param providers
+   * @param metadata
    */
-  public static createForWhen<T>(provide: Newable<T>, when: WhenType, scope?: BindingScope, providers?: Provider[]) {
-    return new ConstructorProvider<T>(provide, scope, providers, when);
+  public static createForWhen<T>(provide: Newable<T>, when: WhenType, scope?: BindingScope, metadata?: Partial<GeckoModuleIml>) {
+    return new ConstructorProvider<T>(provide, scope, metadata, when);
   }
 }
 

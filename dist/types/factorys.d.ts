@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 import { BindingScope, DynamicValueBuilder, Newable, ResolutionContext, ServiceIdentifier } from 'inversify';
-import { GeckoModuleIml, MapToResolvedValueInjectOptions, Provider } from './interfaces';
+import { GeckoModuleIml, MapToResolvedValueInjectOptions } from './interfaces';
 import { When } from "./when";
 import { WhenAnyAncestor } from "./when-any-ancestor";
 import { WhenAnyAncestorIs } from "./when-any-ancestor-is";
@@ -83,25 +83,25 @@ export declare class DynamicValueProvider<T = unknown> {
 export declare class ConstructorProvider<T = unknown> {
     provide: Newable<T>;
     scope?: BindingScope;
-    providers?: Provider[];
+    metadata?: Partial<GeckoModuleIml>;
     when?: WhenType;
-    constructor(provide: Newable<T>, scope?: BindingScope, providers?: Provider[], when?: WhenType);
+    constructor(provide: Newable<T>, scope?: BindingScope, metadata?: Partial<GeckoModuleIml>, when?: WhenType);
     /**
      * ConstructorProvider
      * @param provide
      * @param scope
-     * @param providers
+     * @param metadata
      * @param when
      */
-    static create<T>(provide: Newable<T>, scope?: BindingScope, providers?: Provider[], when?: WhenType): ConstructorProvider<T>;
+    static create<T>(provide: Newable<T>, scope?: BindingScope, metadata?: Partial<GeckoModuleIml>, when?: WhenType): ConstructorProvider<T>;
     /**
      * ConstructorProvider
      * @param provide
      * @param scope
      * @param when
-     * @param providers
+     * @param metadata
      */
-    static createForWhen<T>(provide: Newable<T>, when: WhenType, scope?: BindingScope, providers?: Provider[]): ConstructorProvider<T>;
+    static createForWhen<T>(provide: Newable<T>, when: WhenType, scope?: BindingScope, metadata?: Partial<GeckoModuleIml>): ConstructorProvider<T>;
 }
 export declare class ClassProvider<T = unknown> {
     provide: ServiceIdentifier<T>;

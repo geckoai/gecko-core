@@ -27,17 +27,17 @@ var DynamicValueProvider = (function () {
 }());
 export { DynamicValueProvider };
 var ConstructorProvider = (function () {
-    function ConstructorProvider(provide, scope, providers, when) {
+    function ConstructorProvider(provide, scope, metadata, when) {
         this.provide = provide;
         this.scope = scope;
-        this.providers = providers;
+        this.metadata = metadata;
         this.when = when;
     }
-    ConstructorProvider.create = function (provide, scope, providers, when) {
-        return new ConstructorProvider(provide, scope, providers);
+    ConstructorProvider.create = function (provide, scope, metadata, when) {
+        return new ConstructorProvider(provide, scope, metadata);
     };
-    ConstructorProvider.createForWhen = function (provide, when, scope, providers) {
-        return new ConstructorProvider(provide, scope, providers, when);
+    ConstructorProvider.createForWhen = function (provide, when, scope, metadata) {
+        return new ConstructorProvider(provide, scope, metadata, when);
     };
     return ConstructorProvider;
 }());
